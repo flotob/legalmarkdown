@@ -11,6 +11,7 @@ The legal_markdown spec available (sort of) [here](https://github.com/compleatan
 * PDF rendering added as an output format in addition to markdown. PDFs shall be rendered according to the passed template which should conform to the Pandoc PDF template spec.
 * Multiple content files can be passed. They will be assembled in sequential order as they are passed.
 * There shall be no XML output.
+* Only parse 5 levels of headers
 
 The remainder of the spec shall be abided by.
 
