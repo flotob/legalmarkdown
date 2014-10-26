@@ -4,18 +4,13 @@ import (
     "os"
     "fmt"
     "log"
-    "io/ioutil"
     "github.com/codegangsta/cli"
-    // "gopkg.in/yaml.v2"
     // "path/filepath"
-    // "strings"
 )
 
 // manages the performance of the entire parsing job.
 //   It accepts a base lmd file to parse along with an optional parameters file.
 func main(){
-
-
     lmd := cli.NewApp()
 
     lmd.Name    = "legalmarkdown"
@@ -25,6 +20,7 @@ func main(){
     lmd.Email   = "contact@erisindustries.com"
 
     lmd.Commands = []cli.Command{
+
       {
         Name:      "tomd",
         ShortName: "m",
@@ -45,6 +41,7 @@ func main(){
         },
         Action:    CLILegalToMarkdown,
       },
+
       {
         Name:      "headers",
         ShortName: "d",
@@ -64,40 +61,45 @@ func main(){
     }
 
     lmd.Run(os.Args)
-
 }
 
 func CLILegalToMarkdown(c *cli.Context) {
-    contents := read_a_file(c.String("template"))
 
-    var parameters string
+    if c.String("template") == "" {
+        log.Fatal("Please specify a template file to parse with the --template or -t flag.")
+    }
+
+    contents := read_a_file(c.String("template"))
+    contents  = import_files(contents)
+
+    // once the content files have been read, then move along to parsing the parameters.
+    var parameters         string
+    var amended_parameters map[string]string
     if c.String("parameters") != "" {
-        parameters     = read_a_file(c.String("parameters"))
+        // first pull out of the file, just as we do if there is no specific params file
+        var merged_parameters map[string]string
+        parameters, contents = parse_template_to_find_parameters(contents)
+        merged_parameters    = unmarshall_parameters(parameters)
+        // second read and unmarshall the parameters from the parameters file
+        parameters           = read_a_file(c.String("parameters"))
+        amended_parameters   = unmarshall_parameters(parameters)
+        // finally, merge the amended_parameters (from the parameters file) into the
+        //   merged_parameters (from the content file) such that the amended_parameters
+        //   overwritethe merged_parameters.
+        amended_parameters   = merge_parameters(amended_parameters, merged_parameters)
     } else {
-        // TODO: parse parameters function goes here.
-        parameters     = ""
+        // if there is no parameters file passed, simply pull the params out of the content file.
+        parameters, contents = parse_template_to_find_parameters(contents)
+        amended_parameters   = unmarshall_parameters(parameters)
     }
 
     // placeholders. TODO: build master LegalToMarkdown(contents string, parameters struct, output string)
     fmt.Print(contents)
-    fmt.Print("\n---\n")
-    fmt.Print(parameters)
+    fmt.Print("\n--*****--\n")
+    fmt.Print(amended_parameters)
 }
 
 func CLIMakeYAMLFrontMatter(c *cli.Context) {
     contents := read_a_file(c.String("template"))
     fmt.Print(contents)
-}
-
-func read_a_file(file_to_parse string) (contents string){
-
-    file_buffer, file_read_err := ioutil.ReadFile(file_to_parse)
-
-    if file_read_err != nil {
-        log.Fatal(file_read_err)
-    }
-
-    contents = string(file_buffer)
-
-    return contents
 }
