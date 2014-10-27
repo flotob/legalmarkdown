@@ -82,7 +82,7 @@ func cliLegalToMarkdown(c *cli.Context) {
 	parameters := c.String("parameters")
     output     := c.String("output")
 
-	LegalToMarkdown(contents, parameters, output)
+	lmd.LegalToMarkdown(contents, parameters, output)
 }
 
 func cliMakeYAMLFrontMatter(c *cli.Context) {
@@ -118,37 +118,37 @@ func cliMakeYAMLFrontMatter(c *cli.Context) {
 // These are passed to the primary entrance function to the parsing process.
 func LegalToMarkdown(contents string, parameters string, output string) {
 
-	// read the template file and integrate any included partials (`@include PARTIAL` within the text)
-	contents = lmd.ReadAFile(contents)
-	contents = lmd.ImportIncludedFiles(contents)
+    // read the template file and integrate any included partials (`@include PARTIAL` within the text)
+    contents = lmd.ReadAFile(contents)
+    contents = lmd.ImportIncludedFiles(contents)
 
-	// once the content files have been read, then move along to parsing the parameters.
-	var amended_parameters map[string]string
-	if parameters != "" {
+    // once the content files have been read, then move along to parsing the parameters.
+    var amended_parameters map[string]string
+    if parameters != "" {
 
-		// first pull out of the file, just as we do if there is no specific params file
-		var merged_parameters map[string]string
-		parameters, contents = lmd.ParseTemplateToFindParameters(contents)
-		merged_parameters    = lmd.UnmarshallParameters(parameters)
+        // first pull out of the file, just as we do if there is no specific params file
+        var merged_parameters map[string]string
+        parameters, contents = lmd.ParseTemplateToFindParameters(contents)
+        merged_parameters    = lmd.UnmarshallParameters(parameters)
 
-		// second read and unmarshall the parameters from the parameters file
-		parameters           = lmd.ReadAFile(parameters)
-		amended_parameters   = lmd.UnmarshallParameters(parameters)
+        // second read and unmarshall the parameters from the parameters file
+        parameters           = lmd.ReadAFile(parameters)
+        amended_parameters   = lmd.UnmarshallParameters(parameters)
 
-		// finally, merge the amended_parameters (from the parameters file) into the
-		//   merged_parameters (from the content file) such that the amended_parameters
-		//   overwritethe merged_parameters.
-		amended_parameters   = lmd.MergeParameters(amended_parameters, merged_parameters)
+        // finally, merge the amended_parameters (from the parameters file) into the
+        //   merged_parameters (from the content file) such that the amended_parameters
+        //   overwritethe merged_parameters.
+        amended_parameters   = lmd.MergeParameters(amended_parameters, merged_parameters)
 
-	} else {
+    } else {
 
-		// if there is no parameters file passed, simply pull the params out of the content file.
-		parameters, contents = lmd.ParseTemplateToFindParameters(contents)
-		amended_parameters   = lmd.UnmarshallParameters(parameters)
+        // if there is no parameters file passed, simply pull the params out of the content file.
+        parameters, contents = lmd.ParseTemplateToFindParameters(contents)
+        amended_parameters   = lmd.UnmarshallParameters(parameters)
 
-	}
+    }
 
-	contents = legalToMarkdownParser(contents, amended_parameters)
+    contents = legalToMarkdownParser(contents, amended_parameters)
 
     // TODO: call the appropriate writer
     lmd.WriteAFile(output, contents)
@@ -174,5 +174,5 @@ func MakeYAMLFrontMatter(contents string) (string) {
 // back to the user.
 func legalToMarkdownParser(contents string, parameters map[string]string) string {
 
-	return contents
+    return contents
 }
