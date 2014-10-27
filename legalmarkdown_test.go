@@ -8,6 +8,7 @@ import (
     "testing"
     "io/ioutil"
     "path/filepath"
+    "github.com/eris-ltd/legalmarkdown/lmd"
 )
 
 const CLR_0 = "\x1b[30;1m"
@@ -53,7 +54,7 @@ func testIndividualFile(file string) bool {
 
     // set the basis and read it into memory
     basis_file      := strings.Replace(file, ".lmd", ".md", 1)
-    test_against_me := read_a_file(basis_file)
+    test_against_me := lmd.ReadAFile(basis_file)
 
     // make a temp file
     temp_file, temp_file_err := ioutil.TempFile(os.TempDir(), "lmd-test-")
@@ -66,7 +67,7 @@ func testIndividualFile(file string) bool {
     LegalToMarkdown(file, "", temp_file.Name())
 
     // read the tempfile
-    i_made_this_file := read_a_file(temp_file.Name())
+    i_made_this_file := lmd.ReadAFile(temp_file.Name())
 
     // announce
     if test_against_me == i_made_this_file {
