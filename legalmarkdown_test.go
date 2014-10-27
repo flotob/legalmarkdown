@@ -56,10 +56,11 @@ func testIndividualFile(file string) bool {
     test_against_me := read_a_file(basis_file)
 
     // make a temp file
-    temp_file, temp_file_err := ioutil.TempFile(os.TempDir(), "lmd-test")
+    temp_file, temp_file_err := ioutil.TempFile(os.TempDir(), "lmd-test-")
     if temp_file_err != nil {
         log.Fatal(temp_file_err)
     }
+    defer os.Remove(temp_file.Name())
 
     // run LegalToMarkdown on the fixture
     LegalToMarkdown(file, "", temp_file.Name())
