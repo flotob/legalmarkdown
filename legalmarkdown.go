@@ -82,7 +82,7 @@ func cliLegalToMarkdown(c *cli.Context) {
 	parameters := c.String("parameters")
     output     := c.String("output")
 
-	lmd.LegalToMarkdown(contents, parameters, output)
+	LegalToMarkdown(contents, parameters, output)
 }
 
 func cliMakeYAMLFrontMatter(c *cli.Context) {
@@ -116,15 +116,16 @@ func cliMakeYAMLFrontMatter(c *cli.Context) {
 //   parameters
 //
 // These are passed to the primary entrance function to the parsing process.
-func LegalToMarkdown(contents string, parameters string, output string) {
+func LegalToMarkdown(contents string, parameters_file string, output string) {
 
     // read the template file and integrate any included partials (`@include PARTIAL` within the text)
     contents = lmd.ReadAFile(contents)
     contents = lmd.ImportIncludedFiles(contents)
 
     // once the content files have been read, then move along to parsing the parameters.
+    var parameters string
     var amended_parameters map[string]string
-    if parameters != "" {
+    if parameters_file != "" {
 
         // first pull out of the file, just as we do if there is no specific params file
         var merged_parameters map[string]string
@@ -132,7 +133,7 @@ func LegalToMarkdown(contents string, parameters string, output string) {
         merged_parameters    = lmd.UnmarshallParameters(parameters)
 
         // second read and unmarshall the parameters from the parameters file
-        parameters           = lmd.ReadAFile(parameters)
+        parameters           = lmd.ReadAFile(parameters_file)
         amended_parameters   = lmd.UnmarshallParameters(parameters)
 
         // finally, merge the amended_parameters (from the parameters file) into the
@@ -173,6 +174,7 @@ func MakeYAMLFrontMatter(contents string) (string) {
 // contents so that that function may call the appropriate writer for outputting the parsed document
 // back to the user.
 func legalToMarkdownParser(contents string, parameters map[string]string) string {
-
+    fmt.Println(parameters)
+    fmt.Println("")
     return contents
 }
