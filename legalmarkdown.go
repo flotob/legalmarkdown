@@ -97,23 +97,16 @@ func cliMakeYAMLFrontMatter(c *cli.Context) {
 // should be passed to the function. The parameters string may be an empty string. The function first
 // parses and reads the command sent from the command line, and then reads the template file. After
 // this, the function pulls into the template file any partials which have been included into the
-// template with the
-//   @include {{PARTIAL}}
-// flag within the text of the primary template file that has been called.
+// template with the `@include {{PARTIAL}}` flag within the text of the primary template file that
+// has been called.
 //
 // Then the function reads the paramaters from a parameters file, the template file, or both. In the
 // case where the parameters are contained in both a parameters file and in the template file, the
 // parameters in the template file are considered as defaults which are overridden by parameters passed
 // to the function via the paramaters file.
 //
-// Finally once the function has prepared the
-//   contents
-// and
-//   parameters
-// from the various passed files and built a cohesive set of
-//   contents
-// and
-//   parameters
+// Finally once the function has prepared the `contents` and `parameters` from the various passed files
+// and built a cohesive set of `contents` and `parameters`.
 //
 // These are passed to the primary entrance function to the parsing process.
 func LegalToMarkdown(contents string, parameters_file string, output string) {
@@ -151,7 +144,6 @@ func LegalToMarkdown(contents string, parameters_file string, output string) {
 
     contents = legalToMarkdownParser(contents, amended_parameters)
 
-    // TODO: call the appropriate writer
     lmd.WriteAFile(output, contents)
 }
 
@@ -174,7 +166,6 @@ func MakeYAMLFrontMatter(contents string) (string) {
 // contents so that that function may call the appropriate writer for outputting the parsed document
 // back to the user.
 func legalToMarkdownParser(contents string, parameters map[string]string) string {
-    fmt.Println(parameters)
-    fmt.Println("")
+
     return contents
 }
