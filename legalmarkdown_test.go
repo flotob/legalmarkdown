@@ -1,4 +1,4 @@
-package legalmarkdown
+package main
 
 import (
     "os"

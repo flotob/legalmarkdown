@@ -3,28 +3,28 @@
 // into your legal practice. By integrating such programming concepts as partials, templates,
 // boolean triggers, and the like (which sound fancy but are very simple to explain), your
 // transactional practice will be greatly simplified.
-package legalmarkdown
+package main
 
 import (
-	"fmt"
-	"github.com/codegangsta/cli"
-	"log"
-	"os"
-	// "path/filepath"
+    "os"
+    "fmt"
+    "log"
+    "github.com/codegangsta/cli"
+    "github.com/eris-ltd/legalmarkdown/lmd"
 )
 
 // main parses the command line inputs and routes the commands to the appropriate wrapper
 // functions.
 func main() {
-	lmd := cli.NewApp()
+	legalmd := cli.NewApp()
 
-	lmd.Name = "legalmarkdown"
-	lmd.Usage = "Automate your contracting."
-	lmd.Version = "0.1.0"
-	lmd.Author = "Eris Industries, Ltd."
-	lmd.Email = "contact@erisindustries.com"
+	legalmd.Name = "legalmarkdown"
+	legalmd.Usage = "Automate your contracting."
+	legalmd.Version = "0.1.0"
+	legalmd.Author = "Eris Industries, Ltd."
+	legalmd.Email = "contact@erisindustries.com"
 
-	lmd.Commands = []cli.Command{
+	legalmd.Commands = []cli.Command{
 
 		{
 			Name:      "tomd",
@@ -65,7 +65,7 @@ func main() {
 		},
 	}
 
-	lmd.Run(os.Args)
+	legalmd.Run(os.Args)
 }
 
 func cliLegalToMarkdown(c *cli.Context) {
@@ -73,6 +73,10 @@ func cliLegalToMarkdown(c *cli.Context) {
 	if c.String("template") == "" {
 		log.Fatal("Please specify a template file to parse with the --template or -t flag.")
 	}
+
+    if c.String("output")   == "" {
+        log.Fatal("Please specify an output file to write to with the --output or -o flag.")
+    }
 
 	contents   := c.String("template")
 	parameters := c.String("parameters")
@@ -83,7 +87,7 @@ func cliLegalToMarkdown(c *cli.Context) {
 
 func cliMakeYAMLFrontMatter(c *cli.Context) {
 
-	contents := read_a_file(c.String("template"))
+	contents := lmd.ReadAFile(c.String("template"))
 	fmt.Print(contents)
 
 }
@@ -115,8 +119,8 @@ func cliMakeYAMLFrontMatter(c *cli.Context) {
 func LegalToMarkdown(contents string, parameters string, output string) {
 
 	// read the template file and integrate any included partials (`@include PARTIAL` within the text)
-	contents = read_a_file(contents)
-	contents = import_files(contents)
+	contents = lmd.ReadAFile(contents)
+	contents = lmd.ImportIncludedFiles(contents)
 
 	// once the content files have been read, then move along to parsing the parameters.
 	var amended_parameters map[string]string
@@ -124,30 +128,30 @@ func LegalToMarkdown(contents string, parameters string, output string) {
 
 		// first pull out of the file, just as we do if there is no specific params file
 		var merged_parameters map[string]string
-		parameters, contents = parse_template_to_find_parameters(contents)
-		merged_parameters = unmarshall_parameters(parameters)
+		parameters, contents = lmd.ParseTemplateToFindParameters(contents)
+		merged_parameters    = lmd.UnmarshallParameters(parameters)
 
 		// second read and unmarshall the parameters from the parameters file
-		parameters = read_a_file(parameters)
-		amended_parameters = unmarshall_parameters(parameters)
+		parameters           = lmd.ReadAFile(parameters)
+		amended_parameters   = lmd.UnmarshallParameters(parameters)
 
 		// finally, merge the amended_parameters (from the parameters file) into the
 		//   merged_parameters (from the content file) such that the amended_parameters
 		//   overwritethe merged_parameters.
-		amended_parameters = merge_parameters(amended_parameters, merged_parameters)
+		amended_parameters   = lmd.MergeParameters(amended_parameters, merged_parameters)
 
 	} else {
 
 		// if there is no parameters file passed, simply pull the params out of the content file.
-		parameters, contents = parse_template_to_find_parameters(contents)
-		amended_parameters = unmarshall_parameters(parameters)
+		parameters, contents = lmd.ParseTemplateToFindParameters(contents)
+		amended_parameters   = lmd.UnmarshallParameters(parameters)
 
 	}
 
 	contents = legalToMarkdownParser(contents, amended_parameters)
 
     // TODO: call the appropriate writer
-    write_a_file(output, contents)
+    lmd.WriteAFile(output, contents)
 }
 
 // MakeYAMLFrontMatter is a convenience function which will parse the contents of a template
@@ -169,7 +173,6 @@ func MakeYAMLFrontMatter(contents string) (string) {
 // contents so that that function may call the appropriate writer for outputting the parsed document
 // back to the user.
 func legalToMarkdownParser(contents string, parameters map[string]string) string {
-
 
 	return contents
 }
