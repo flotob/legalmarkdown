@@ -7,4 +7,4 @@ notifications:
     recipients:
       - casey@erisindustries.com
     on_success: change
-    on_failure: always
+    on_failure: change
