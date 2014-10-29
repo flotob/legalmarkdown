@@ -1,7 +1,7 @@
 package lmd
 
 import (
-    "strconv"
+	"strconv"
 )
 
 // next_lettering will iterate a given string to give the next logical lettering point
@@ -33,9 +33,9 @@ func next_lettering(previous string) string {
 // that is subsequently increased by one and then changed back to a roman number
 // via the from_arabic_to_roman function.
 func next_roman_upper(previous string) string {
-    prev_as_digit := from_roman_to_arabic_upper(previous)
-    next_as_digit := prev_as_digit + 1
-    return from_arabic_to_roman_upper(next_as_digit)
+	prev_as_digit := from_roman_to_arabic_upper(previous)
+	next_as_digit := prev_as_digit + 1
+	return from_arabic_to_roman_upper(next_as_digit)
 }
 
 // next_roman_lower increases a roman number by one position for lower cased roman
@@ -43,18 +43,18 @@ func next_roman_upper(previous string) string {
 // that is subsequently increased by one and then changed back to a roman number
 // via the from_arabic_to_roman function.
 func next_roman_lower(previous string) string {
-    prev_as_digit := from_roman_to_arabic_lower(previous)
-    next_as_digit := prev_as_digit + 1
-    return from_arabic_to_roman_lower(next_as_digit)
+	prev_as_digit := from_roman_to_arabic_lower(previous)
+	next_as_digit := prev_as_digit + 1
+	return from_arabic_to_roman_lower(next_as_digit)
 }
 
 // next_numbering increases numbers which are presented as strings for the package
 // the function uses the strconv package first to convert the string to an integer
 // then it increases the integer by one and then converts it back to a string.
 func next_numbering(previous string) string {
-    prev_as_digit, _ := strconv.Atoi(previous)
-    next_as_digit := prev_as_digit + 1
-    return strconv.Itoa(next_as_digit)
+	prev_as_digit, _ := strconv.Atoi(previous)
+	next_as_digit := prev_as_digit + 1
+	return strconv.Itoa(next_as_digit)
 }
 
 // from_roman_to_arabic_upper is a convenience function which converts upper cased
@@ -62,31 +62,31 @@ func next_numbering(previous string) string {
 //
 // via: http://rosettacode.org/wiki/Roman_numerals/Decode#Go
 func from_roman_to_arabic_upper(romans string) int {
-    var arabic int
+	var arabic int
 
-    // set a map from the roman runes to arabic integers
-    var roman_to_arabic_map = map[rune]int{
-        'I': 1,
-        'V': 5,
-        'X': 10,
-        'L': 50,
-        'C': 100,
-        'D': 500,
-        'M': 1000,
-    }
+	// set a map from the roman runes to arabic integers
+	var roman_to_arabic_map = map[rune]int{
+		'I': 1,
+		'V': 5,
+		'X': 10,
+		'L': 50,
+		'C': 100,
+		'D': 500,
+		'M': 1000,
+	}
 
-    // loop through the roman string which is passed by rune
-    last_digit := 1000
-    for _, roman := range romans {
-        digit := roman_to_arabic_map[roman]
-        if last_digit < digit {
-            arabic -= 2 * last_digit
-        }
-        last_digit = digit
-        arabic += digit
-    }
+	// loop through the roman string which is passed by rune
+	last_digit := 1000
+	for _, roman := range romans {
+		digit := roman_to_arabic_map[roman]
+		if last_digit < digit {
+			arabic -= 2 * last_digit
+		}
+		last_digit = digit
+		arabic += digit
+	}
 
-    return arabic
+	return arabic
 }
 
 // from_arabic_to_roman_upper is a convenience function which converts upper cased
@@ -95,21 +95,21 @@ func from_roman_to_arabic_upper(romans string) int {
 // via: http://rosettacode.org/wiki/Roman_numerals/Encode#Go
 func from_arabic_to_roman_upper(arabic int) string {
 
-    var (
-        m0 = []string{"", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX"}
-        m1 = []string{"", "X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC"}
-        m2 = []string{"", "C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM"}
-        m3 = []string{"", "M", "MM", "MMM", "IV", "V", "VI", "VII", "VIII", "IX"}
-        m4 = []string{"", "X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC"}
-        m5 = []string{"", "C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM"}
-        m6 = []string{"", "M", "MM", "MMM"}
-    )
+	var (
+		m0 = []string{"", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX"}
+		m1 = []string{"", "X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC"}
+		m2 = []string{"", "C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM"}
+		m3 = []string{"", "M", "MM", "MMM", "IV", "V", "VI", "VII", "VIII", "IX"}
+		m4 = []string{"", "X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC"}
+		m5 = []string{"", "C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM"}
+		m6 = []string{"", "M", "MM", "MMM"}
+	)
 
-    if arabic < 1 || arabic >= 4e6 {
-        return ""
-    }
+	if arabic < 1 || arabic >= 4e6 {
+		return ""
+	}
 
-    return m6[arabic/1e6] + m5[arabic%1e6/1e5] + m4[arabic%1e5/1e4] + m3[arabic%1e4/1e3] + m2[arabic%1e3/1e2] + m1[arabic%100/10] + m0[arabic%10]
+	return m6[arabic/1e6] + m5[arabic%1e6/1e5] + m4[arabic%1e5/1e4] + m3[arabic%1e4/1e3] + m2[arabic%1e3/1e2] + m1[arabic%100/10] + m0[arabic%10]
 }
 
 // from_roman_to_arabic_lower is a convenience function which converts lower cased
@@ -117,31 +117,31 @@ func from_arabic_to_roman_upper(arabic int) string {
 //
 // via: http://rosettacode.org/wiki/Roman_numerals/Decode#Go
 func from_roman_to_arabic_lower(romans string) int {
-    var arabic int
+	var arabic int
 
-    // set a map from the roman runes to arabic integers
-    var roman_to_arabic_map = map[rune]int{
-        'i': 1,
-        'v': 5,
-        'x': 10,
-        'l': 50,
-        'c': 100,
-        'd': 500,
-        'm': 1000,
-    }
+	// set a map from the roman runes to arabic integers
+	var roman_to_arabic_map = map[rune]int{
+		'i': 1,
+		'v': 5,
+		'x': 10,
+		'l': 50,
+		'c': 100,
+		'd': 500,
+		'm': 1000,
+	}
 
-    // loop through the roman string which is passed by rune
-    last_digit := 1000
-    for _, roman := range romans {
-        digit := roman_to_arabic_map[roman]
-        if last_digit < digit {
-            arabic -= 2 * last_digit
-        }
-        last_digit = digit
-        arabic += digit
-    }
+	// loop through the roman string which is passed by rune
+	last_digit := 1000
+	for _, roman := range romans {
+		digit := roman_to_arabic_map[roman]
+		if last_digit < digit {
+			arabic -= 2 * last_digit
+		}
+		last_digit = digit
+		arabic += digit
+	}
 
-    return arabic
+	return arabic
 }
 
 // from_arabic_to_roman_upper is a convenience function which converts lower cased
@@ -150,19 +150,19 @@ func from_roman_to_arabic_lower(romans string) int {
 // via: http://rosettacode.org/wiki/Roman_numerals/Encode#Go
 func from_arabic_to_roman_lower(arabic int) string {
 
-    var (
-        m0 = []string{"", "i", "ii", "iii", "iv", "v", "vi", "vii", "viii", "ix"}
-        m1 = []string{"", "x", "xx", "xxx", "xl", "l", "lx", "lxx", "lxxx", "xc"}
-        m2 = []string{"", "c", "cc", "ccc", "cd", "d", "dc", "dcc", "dccc", "cm"}
-        m3 = []string{"", "m", "mm", "mmm", "iv", "v", "vi", "vii", "viii", "xi"}
-        m4 = []string{"", "x", "xx", "xxx", "xl", "l", "lx", "lxx", "lxxx", "xc"}
-        m5 = []string{"", "c", "cc", "ccc", "cd", "d", "dc", "dcc", "dccc", "cm"}
-        m6 = []string{"", "m", "mm", "mmm"}
-    )
+	var (
+		m0 = []string{"", "i", "ii", "iii", "iv", "v", "vi", "vii", "viii", "ix"}
+		m1 = []string{"", "x", "xx", "xxx", "xl", "l", "lx", "lxx", "lxxx", "xc"}
+		m2 = []string{"", "c", "cc", "ccc", "cd", "d", "dc", "dcc", "dccc", "cm"}
+		m3 = []string{"", "m", "mm", "mmm", "iv", "v", "vi", "vii", "viii", "xi"}
+		m4 = []string{"", "x", "xx", "xxx", "xl", "l", "lx", "lxx", "lxxx", "xc"}
+		m5 = []string{"", "c", "cc", "ccc", "cd", "d", "dc", "dcc", "dccc", "cm"}
+		m6 = []string{"", "m", "mm", "mmm"}
+	)
 
-    if arabic < 1 || arabic >= 4e6 {
-        return ""
-    }
+	if arabic < 1 || arabic >= 4e6 {
+		return ""
+	}
 
-    return m6[arabic/1e6] + m5[arabic%1e6/1e5] + m4[arabic%1e5/1e4] + m3[arabic%1e4/1e3] + m2[arabic%1e3/1e2] + m1[arabic%100/10] + m0[arabic%10]
+	return m6[arabic/1e6] + m5[arabic%1e6/1e5] + m4[arabic%1e5/1e4] + m3[arabic%1e4/1e3] + m2[arabic%1e3/1e2] + m1[arabic%100/10] + m0[arabic%10]
 }
