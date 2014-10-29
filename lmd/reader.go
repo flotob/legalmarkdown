@@ -1,12 +1,12 @@
 package lmd
 
 import (
-    "os"
-    "log"
-    "regexp"
-    "strings"
-    "io/ioutil"
 	"gopkg.in/yaml.v2"
+	"io/ioutil"
+	"log"
+	"os"
+	"regexp"
+	"strings"
 )
 
 // ReadAFile is a convenience function. Given a filename string, reads the file and passes it back to
@@ -14,14 +14,14 @@ import (
 // from a file.
 func ReadAFile(file_to_read string) string {
 
-    if file_to_read == " -" || file_to_read == "-" {
+	if file_to_read == " -" || file_to_read == "-" {
 
-        std_in_read, std_in_err := ioutil.ReadAll(os.Stdin)
-        if std_in_err != nil {
-            log.Fatal(std_in_err)
-        }
-        return string(std_in_read)
-    }
+		std_in_read, std_in_err := ioutil.ReadAll(os.Stdin)
+		if std_in_err != nil {
+			log.Fatal(std_in_err)
+		}
+		return string(std_in_read)
+	}
 
 	file_buffer, file_read_err := ioutil.ReadFile(file_to_read)
 
