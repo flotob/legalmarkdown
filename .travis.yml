@@ -4,5 +4,7 @@ go:
 
 notifications:
   email:
-      on_success: change
-      on_failure: always
+    recipients:
+      - casey@erisindustries.com
+    on_success: change
+    on_failure: always
