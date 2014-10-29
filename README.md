@@ -1,20 +1,19 @@
-# Legal Markdown - GoLang
+Master [![Build Status](https://travis-ci.org/eris-ltd/legalmarkdown.svg?branch=master)](https://travis-ci.org/reris-ltd/legalmarkdown) || Develop [![Build Status](https://travis-ci.org/eris-ltd/legalmarkdown.svg?branch=develop)](https://travis-ci.org/reris-ltd/legalmarkdown)
 
-GoLang Port of legal_markdown.
+## Legal Markdown - GoLang
 
-The legal_markdown spec available (sort of) [here](https://github.com/compleatang/legal-markdown/blob/master/README.md) shall apply to this repository and package with one change.
+Go port of legalmarkdown. The legalmarkdown spec is available [here](https://github.com/compleatang/legal-markdown/blob/master/README.md). That specification shall apply to this repository and package with a few changes noted below.
 
-# Modifications to Ruby port of Legal Markdown
+## Modifications from Ruby version of Legal Markdown
 
-* Header information **will not** be kept in the same files as the provisions and other content. So two files (or objects if calling programmatically) should always be passed to the package individually with the header information format passed first and the content file passed second.
+* Header information may be kept in the same or in different files as the provisions and other content. So two files (or objects if calling programmatically) may be passed to the package individually with the header information format passed first and the content file passed second.
 * Header information can be passed in `json` or in `yaml` format.
-* PDF rendering added as an output format in addition to markdown. PDFs shall be rendered according to the passed template which should conform to the Pandoc PDF template spec.
+* PDF rendering added as an output format in addition to markdown.
 * Multiple content files can be passed. They will be assembled in sequential order as they are passed.
 * There shall be no XML output.
-* Only parse 5 levels of headers
 
 The remainder of the spec shall be abided by.
 
-# License
+## License
 
 MIT, see LICENSE file.
