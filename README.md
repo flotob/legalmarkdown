@@ -1,4 +1,4 @@
-Master [![Build Status](https://travis-ci.org/eris-ltd/legalmarkdown.svg?branch=master)](https://travis-ci.org/reris-ltd/legalmarkdown) || Develop [![Build Status](https://travis-ci.org/eris-ltd/legalmarkdown.svg?branch=develop)](https://travis-ci.org/reris-ltd/legalmarkdown)
+Master [![Build Status](https://travis-ci.org/eris-ltd/legalmarkdown.svg?branch=master)](https://travis-ci.org/eris-ltd/legalmarkdown) || Develop [![Build Status](https://travis-ci.org/eris-ltd/legalmarkdown.svg?branch=develop)](https://travis-ci.org/eris-ltd/legalmarkdown)
 
 ## Legal Markdown - GoLang
 
