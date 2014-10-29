@@ -27,16 +27,16 @@ import (
 // the structured_headers phase of the overall parse.
 func HandleMixins(contents string, parameters map[string]string) (string, map[string]string) {
 
-    // create a parking_lot variable and park the parameters we know we don't want to mess with
-    // during this phase
+	// create a parking_lot variable and park the parameters we know we don't want to mess with
+	// during this phase
 	var params_parking_lot map[string]string
 	parameters, params_parking_lot = prepareParamsParkingLot(parameters)
 
-    // run the optional clauses and mixins
+	// run the optional clauses and mixins
 	contents, parameters = runOptionalClauses(contents, parameters)
 	contents = runTextMixins(contents, parameters)
 
-    // perform some simple clean up
+	// perform some simple clean up
 	contents = cleanUpPostMixins(contents)
 
 	return contents, params_parking_lot
@@ -50,18 +50,18 @@ func prepareParamsParkingLot(parameters map[string]string) (map[string]string, m
 	parameters_blacklist_strings := []string{"level-[0-9]", "no-reset", "no-indent", "level-style"}
 
 	// compile those strings into a slice of regular expressions.
-	parameters_blacklist := []*regexp.Regexp{}
+	parameters_blacklist_regexs := []*regexp.Regexp{}
 	for _, to_compile := range parameters_blacklist_strings {
-		parameters_blacklist = append(parameters_blacklist, regexp.MustCompile(to_compile))
+		parameters_blacklist_regexs = append(parameters_blacklist_regexs, regexp.MustCompile(to_compile))
 	}
 
 	// prepare a parking lot, loop through each of the parameters, compare against each of the
-	//   blacklisted parameters and if there's a match add to the parking_lot while deleting from
-	//   the paramters list
+	// blacklisted parameters and if there's a match add to the parking_lot while deleting from
+	// the paramters list
 	parking_lot := make(map[string]string)
 	for key, val := range parameters {
-		for _, blackie := range parameters_blacklist {
-			if blackie.MatchString(key) {
+		for _, black_listed := range parameters_blacklist_regexs {
+			if black_listed.MatchString(key) {
 				parking_lot[key] = val
 				delete(parameters, key)
 			}
@@ -80,19 +80,19 @@ func prepareParamsParkingLot(parameters map[string]string) (map[string]string, m
 // after all the "true" and "false" have been expunged from the parameters map).
 func runOptionalClauses(contents string, parameters map[string]string) (string, map[string]string) {
 
-	clauses_added, clauses_deleted := separateOptionalClauses(parameters)
+	clauses_to_add, clauses_to_rem := separateOptionalClauses(parameters)
 
 	for {
 
-        // first pass
-		contents, clauses_added = runThisOptionalClause(contents, clauses_added, true, parameters)
-		contents, clauses_deleted = runThisOptionalClause(contents, clauses_deleted, false, parameters)
+		// first pass
+		contents, clauses_to_add = runThisOptionalClause(contents, parameters, clauses_to_add, true)
+		contents, clauses_to_rem = runThisOptionalClause(contents, parameters, clauses_to_rem, false)
 
-        // reload the slices against the parameters
-		clauses_added, clauses_deleted = separateOptionalClauses(parameters)
+		// reload the slices against the parameters
+		clauses_to_add, clauses_to_rem = separateOptionalClauses(parameters)
 
-        // check if the reloaded slices are of 0 and 0 length, break if yes
-		if len(clauses_added) == 0 && len(clauses_deleted) == 0 {
+		// check if the reloaded slices are of 0 and 0 length, break if yes
+		if len(clauses_to_add) == 0 && len(clauses_to_rem) == 0 {
 			break
 		}
 
@@ -104,7 +104,7 @@ func runOptionalClauses(contents string, parameters map[string]string) (string, 
 // runTextMixins is a very simple function. it loops through the remaining parameters (it is called
 // after the optional clauses have run) and replaces the keys with the values from the parameters
 // map which remains.
-func runTextMixins(contents string, parameters map[string]string) (string) {
+func runTextMixins(contents string, parameters map[string]string) string {
 
 	for to_replace, replacer := range parameters {
 		mixin_pattern := regexp.MustCompile(fmt.Sprintf(`(\{\{%v\}\})`, to_replace))
@@ -119,13 +119,13 @@ func runTextMixins(contents string, parameters map[string]string) (string) {
 // cleanUpPostMixins is a simple function which compresses excessive whitespace.
 func cleanUpPostMixins(contents string) string {
 
-    // when there are more than two new_lines, squeeze those into two.
+	// when there are more than two new_lines, squeeze those into two.
 	too_many_lines := regexp.MustCompile(`\n\n+`)
 	if too_many_lines.MatchString(contents) {
 		contents = too_many_lines.ReplaceAllString(contents, "\n\n")
 	}
 
-    // when there are more than two spaces, squeeze those into one.
+	// when there are more than two spaces, squeeze those into one.
 	too_many_space := regexp.MustCompile(` {2,}`)
 	if too_many_space.MatchString(contents) {
 		contents = too_many_space.ReplaceAllString(contents, " ")
@@ -140,101 +140,63 @@ func cleanUpPostMixins(contents string) string {
 // returned to the calling function.
 func separateOptionalClauses(parameters map[string]string) ([]string, []string) {
 
-	clauses_to_delete := []string{}
+	clauses_to_dele := []string{}
 	clauses_to_keep := []string{}
 
 	for clause, status := range parameters {
 		if status == "true" {
 			clauses_to_keep = append(clauses_to_keep, clause)
 		} else if status == "false" {
-			clauses_to_delete = append(clauses_to_delete, clause)
+			clauses_to_dele = append(clauses_to_dele, clause)
 		}
 	}
 
-	return clauses_to_keep, clauses_to_delete
+	return clauses_to_keep, clauses_to_dele
 }
 
 // runThisOptionalClause is the primary optional clause parsing function. it parses the contents against
 // a set of optional clauses, running through the slice of strings it is given in the clauses slice one
 // time. in general this function will be called a minimum of twice if there are optional clauses in the
 // template file -- once for those optional clauses turned on and once for optional clauses turned off.
-func runThisOptionalClause(contents string, clauses []string, add_or_delete bool, parameters map[string]string) (string, []string) {
+func runThisOptionalClause(contents string, parameters map[string]string, clauses []string, add_or_delete bool) (string, []string) {
 
 	for _, clause := range clauses {
 
-        // there are two relevant regex's one for primary optional clauses and one to check if there are
-        // nested optional clauses
-        pri_pattern := regexp.MustCompile(fmt.Sprintf(`(?m)\[\{\{%v\}\}\s*?(.*?\n*?)\]`, clause))
-        sub_pattern := regexp.MustCompile(`(?m)\[\{\{(\S+?)\}\}\s*?`)
+		// there are two relevant regex's one for primary optional clauses and one to check if there are
+		// nested optional clauses
+		pri_pattern := regexp.MustCompile(fmt.Sprintf(`(?m)\[\{\{%v\}\}\s*?(.*?\n*?)\]`, clause))
+		sub_pattern := regexp.MustCompile(`(?m)\[\{\{(\S+?)\}\}\s*?`)
 
-        // first we check if there is a match within the overall content. are there any optional clauses
-        // at all? if there are then we dump the found group from the regex into the sub_clause string.
+		// first we check if there is a match within the overall content. are there any optional clauses
+		// at all? if there are then we dump the found group from the regex into the sub_clause string.
 		var sub_clause string
 		if pri_pattern.MatchString(contents) {
-			da_finding := pri_pattern.FindAllStringSubmatch(contents, -1)
-			sub_clause = da_finding[0][1]
+			sub_clause = pri_pattern.FindAllStringSubmatch(contents, -1)[0][1]
 		}
 
-        // if the sub_clause (what is between the square brackets) has another nested optional clause
-        // then the pattern will break because we do not want to do anything until we have found the
-        // inner-most nested optional clause which will make our non-greedy regex work.
+		// if the sub_clause (what is between the square brackets) has another nested optional clause
+		// then the pattern will break because we do not want to do anything until we have found the
+		// inner-most nested optional clause which will make our non-greedy regex work.
 		if sub_pattern.MatchString(sub_clause) {
 			continue
 		}
 
-        // the add_or_delete variable is a boolean if it is an add then the subclause will replace the
-        // overall found pattern, if it is false then the whole thing will be replaced with an empty
-        // string.
+		// the add_or_delete variable is a boolean if it is an add then the subclause will replace the
+		// overall found pattern, if it is false then the whole thing will be replaced with an empty
+		// string.
 		if add_or_delete {
 			contents = pri_pattern.ReplaceAllString(contents, strings.TrimSpace(sub_clause))
 		} else {
 			contents = pri_pattern.ReplaceAllString(contents, "")
 		}
 
-        // the final step is to delete the matched clause from the parameters if it is not found in the
-        // contents any longer. this is because we will refresh the loop overall in the runOptionalClauses
-        // function so we don't want to mess with this key any longer.
+		// the final step is to delete the matched clause from the parameters if it is not found in the
+		// contents any longer. this is because we will refresh the loop overall in the runOptionalClauses
+		// function so we don't want to mess with this key any longer.
 		if !pri_pattern.MatchString(contents) {
 			delete(parameters, clause)
 		}
 	}
 
 	return contents, clauses
-}
-
-// includedInThisSlice is a convenience function which simply checks if a particular string is included
-// within a slice of strings.
-func includedInThisSlice(slice []string, element string) bool {
-	for _, ele := range slice {
-		if ele == element {
-			return true
-		}
-	}
-	return false
-}
-
-// removeFromSlice removes one string from a slice of strings and returns the redone slice of strings
-// to the calling method.
-func removeFromSlice(remove_from_me []string, ele_to_remove string) []string {
-	var slice_with_ele_removed []string
-	for i, ele := range remove_from_me {
-		if ele == ele_to_remove {
-			slice_with_ele_removed = append(remove_from_me[:i], remove_from_me[i+1:]...)
-		}
-	}
-	return slice_with_ele_removed
-}
-
-// areTheseSlicesEqual checks if two slices full of string are equal in that they have the same length
-// and each of their elements are equal.
-func areTheseSlicesEqual(first_slice, second_slice []string) bool {
-	if len(first_slice) != len(second_slice) {
-		return false
-	}
-	for i := range first_slice {
-		if first_slice[i] != second_slice[i] {
-			return false
-		}
-	}
-	return true
 }
