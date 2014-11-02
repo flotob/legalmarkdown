@@ -22,5 +22,5 @@ _testmain.go
 *.exe
 *.test
 
-clipboard.go
+clip
 legalmarkdown
