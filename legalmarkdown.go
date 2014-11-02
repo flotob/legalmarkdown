@@ -167,5 +167,7 @@ func MakeYAMLFrontMatter(contents string) string {
 // back to the user.
 func legalToMarkdownParser(contents string, parameters map[string]string) string {
 	contents, parameters = lmd.HandleMixins(contents, parameters)
+	headers := lmd.SetTheHeaders(contents, parameters)
+	contents = lmd.HandleTheHeaders(contents, headers)
 	return contents
 }
