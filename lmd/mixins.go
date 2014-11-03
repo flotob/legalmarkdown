@@ -158,36 +158,35 @@ func separateOptionalClauses(parameters map[string]string) ([]string, []string) 
 // a set of optional clauses, running through the slice of strings it is given in the clauses slice one
 // time. in general this function will be called a minimum of twice if there are optional clauses in the
 // template file -- once for those optional clauses turned on and once for optional clauses turned off.
-func runThisOptionalClause(contents string, parameters map[string]string, clauses []string, add_or_delete bool) (string, []string) {
+func runThisOptionalClause(contents string, parameters map[string]string, clauses []string, toAdd bool) (string, []string) {
 
 	for _, clause := range clauses {
 
 		// there are two relevant regex's one for primary optional clauses and one to check if there are
 		// nested optional clauses
 		pri_pattern := regexp.MustCompile(fmt.Sprintf(`(?sm)\[\{\{%v\}\}\s*?(.*?\n*?)\]`, clause))
-		sub_pattern := regexp.MustCompile(`(?sm)\[\{\{(\S+?)\}\}\s*?`)
+		sub_pattern := regexp.MustCompile(`(?sm)\[\{\{(\S+?)\}\}`)
 
 		// first we check if there is a match within the overall content. are there any optional clauses
 		// at all? if there are then we dump the found group from the regex into the sub_clause string.
-		var sub_clause string
+		var sub_clause [][]string
 		if pri_pattern.MatchString(contents) {
-			sub_clause = pri_pattern.FindAllStringSubmatch(contents, -1)[0][1]
+			sub_clause = pri_pattern.FindAllStringSubmatch(contents, -1)
 		}
 
 		// if the sub_clause (what is between the square brackets) has another nested optional clause
 		// then the pattern will break because we do not want to do anything until we have found the
-		// inner-most nested optional clause which will make our non-greedy regex work.
-		if sub_pattern.MatchString(sub_clause) {
-			continue
-		}
-
-		// the add_or_delete variable is a boolean if it is an add then the subclause will replace the
-		// overall found pattern, if it is false then the whole thing will be replaced with an empty
-		// string.
-		if add_or_delete {
-			contents = pri_pattern.ReplaceAllString(contents, strings.TrimSpace(sub_clause))
-		} else {
-			contents = pri_pattern.ReplaceAllString(contents, "")
+		// inner-most nested optional clause which will make our non-greedy regex work. the toAdd
+		// variable is a boolean if it is an add then the subclause will replace the overall found
+		// pattern, if it is false then the whole thing will be replaced with an empty string.
+		for _, sub := range sub_clause {
+			if sub_pattern.MatchString(sub[1]) {
+				continue
+			} else if toAdd {
+				contents = strings.Replace(contents, sub[0], strings.TrimSpace(sub[1]), 1)
+			} else {
+				contents = strings.Replace(contents, sub[0], "", -1)
+			}
 		}
 
 		// the final step is to delete the matched clause from the parameters if it is not found in the
