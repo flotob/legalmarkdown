@@ -5,10 +5,10 @@ level-2: "Section (a)"
 level-3: "A."
 level-4: "(A)"
 level-5: "a."
-level-6: "X."
-level-7: "(x)"
+level-6: "I."
+level-7: "(i)"
 level-8: "1."
-level-9: "x."
+level-9: "i."
 no-indent: l., ll., lll., llll., lllll., lllll., lllllll., llllllll., lllllllll.
 ---
 

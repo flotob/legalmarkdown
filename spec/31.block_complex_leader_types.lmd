@@ -9,8 +9,8 @@ level-6: "123645789 X."
 level-7: "987654321 (x)"
 level-8: "098765432 1."
 level-9: "=-098765432 x."
-no-indent: l., ll., lll., llll., lllll., lllll., lllllll., llllllll., lllllllll.
-no-reset: l., ll., lll., llll., lllll., lllll., lllllll., llllllll., lllllllll.
+no-indent: l., ll., lll., llll., lllll., llllll., lllllll., llllllll., lllllllll.
+no-reset: l., ll., lll., llll., lllll., llllll., lllllll., llllllll., lllllllll.
 ---
 
 # TEST 4
