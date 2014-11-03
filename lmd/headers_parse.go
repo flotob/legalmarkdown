@@ -103,6 +103,9 @@ func replaceTheLeader(leader string, headers map[string]*Header, block string, c
 
 	var newLeader string
 	header := headers[leader]
+    if header == nil {
+        return block, crossref
+    }
 
 	thisBeforVal := strings.TrimSpace(header.beforVal)
 
@@ -261,6 +264,9 @@ func resetThisAndJuniors(headers map[string]*Header, nextLeader string, thisLead
 
 // iterateThisHeader ...
 func iterateThisHeader(thisHeader *Header) {
+    if thisHeader == nil  {
+        return
+    }
 	switch thisHeader.style {
 	case 1, 2:
 		thisHeader.currtVal = next_roman_upper(thisHeader.currtVal)
