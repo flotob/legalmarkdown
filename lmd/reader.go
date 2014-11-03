@@ -3,10 +3,12 @@ package lmd
 import (
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
+	"fmt"
 	"log"
 	"os"
 	"regexp"
 	"strings"
+	"time"
 )
 
 // ReadAFile is a convenience function. Given a filename string, reads the file and passes it back to
@@ -77,6 +79,17 @@ func UnmarshallParameters(parameters string) map[string]string {
 	parameter_bytes := []byte(parameters)
 	param := make(map[string]string)
 	yaml.Unmarshal(parameter_bytes, &param)
+	for key, val := range param {
+		if strings.TrimSpace(val) == "@today" {
+			year, month, day := time.Now().Date()
+			date := fmt.Sprintf("%v %v %v", day, month, year)
+			param[key] = date
+		} else if strings.TrimSpace(val) == "@today_us" {
+			year, month, day := time.Now().Date()
+			date := fmt.Sprintf("%v %v, %v", month, day, year)
+			param[key] = date
+		}
+	}
 	return param
 }
 
