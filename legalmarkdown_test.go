@@ -38,14 +38,13 @@ func TestLegalToMarkdown(t *testing.T) {
 			passed = append(passed, file)
 		} else {
 			failed = append(failed, file)
+			reportResults(passed, failed)
+			log.Fatal("Fast fail.")
 		}
 	}
 
 	reportResults(passed, failed)
 
-	if len(failed) != 0 {
-		t.Error("Did Not Pass the Tests.")
-	}
 }
 
 func testIndividualFile(file string) bool {
@@ -75,6 +74,10 @@ func testIndividualFile(file string) bool {
 		return true
 	} else {
 		fmt.Println(CLR_R, "NOOOOOOOOOOOOOOOOO.\n", CLR_N)
+		fmt.Println(CLR_G, "Expected =>", CLR_N)
+		fmt.Println(test_against_me)
+		fmt.Println(CLR_R, "Result =>", CLR_N)
+		fmt.Println(i_made_this_file)
 		return false
 	}
 
