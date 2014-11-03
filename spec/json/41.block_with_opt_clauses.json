@@ -1,0 +1,12 @@
+{
+  "test09": true,
+  "test1": false,
+  "test4": true,
+  "test_5": true,
+  "test_7": false,
+  "test_78": false,
+  "level-1": "Article 1.",
+  "level-2": "Section 1.",
+  "level-3": "1.",
+  "no-indent": "l., ll., lll."
+}

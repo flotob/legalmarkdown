@@ -17,7 +17,7 @@ const CLR_G = "\x1b[32;1m"
 const CLR_B = "\x1b[34;1m"
 const CLR_N = "\x1b[0m"
 
-func TestLegalToMarkdown(t *testing.T) {
+func TestLegalToMarkdownWithYAML(t *testing.T) {
 	// create the path properly to the glob command
 	test_files_path := filepath.Join(".", "spec", "*.lmd")
 
@@ -33,7 +33,7 @@ func TestLegalToMarkdown(t *testing.T) {
 
 	// run the unit tests
 	for _, file := range testfiles {
-		success_or_fail := testIndividualFile(file)
+		success_or_fail := testIndividualFileYAML(file)
 		if success_or_fail {
 			passed = append(passed, file)
 		} else {
@@ -47,7 +47,7 @@ func TestLegalToMarkdown(t *testing.T) {
 
 }
 
-func testIndividualFile(file string) bool {
+func testIndividualFileYAML(file string) bool {
 	// announce thyself
 	fmt.Println(CLR_0, "Testing file: ", file, CLR_N)
 
@@ -64,6 +64,74 @@ func testIndividualFile(file string) bool {
 
 	// run LegalToMarkdown on the fixture
 	LegalToMarkdown(file, "", temp_file.Name())
+
+	// read the tempfile
+	i_made_this_file := lmd.ReadAFile(temp_file.Name())
+
+	// announce
+	if test_against_me == i_made_this_file {
+		fmt.Println(CLR_G, "YES!\n", CLR_N)
+		return true
+	} else {
+		fmt.Println(CLR_R, "NOOOOOOOOOOOOOOOOO.\n", CLR_N)
+		fmt.Println(CLR_G, "Expected =>", CLR_N)
+		fmt.Println(test_against_me)
+		fmt.Println(CLR_R, "Result =>", CLR_N)
+		fmt.Println(i_made_this_file)
+		return false
+	}
+
+}
+
+func TestLegalToMarkdownWithJSON(t *testing.T) {
+	// create the path properly to the glob command
+	test_files_path := filepath.Join(".", "spec", "json", "*.lmd")
+
+	// glob the files
+	testfiles, read_error := filepath.Glob(test_files_path)
+	if read_error != nil {
+		log.Fatal(read_error)
+	}
+
+	// set up passed and failed slices
+	passed := []string{}
+	failed := []string{}
+
+	// run the unit tests
+	for _, file := range testfiles {
+		success_or_fail := testIndividualFileJSON(file)
+		if success_or_fail {
+			passed = append(passed, file)
+		} else {
+			failed = append(failed, file)
+			reportResults(passed, failed)
+			log.Fatal("Fast fail.")
+		}
+	}
+
+	reportResults(passed, failed)
+
+}
+
+
+func testIndividualFileJSON(file string) bool {
+	// announce thyself
+	fmt.Println(CLR_0, "Testing file: ", file, CLR_N)
+
+	// set the basis and read it into memory
+	basis_file := strings.Replace(file, ".lmd", ".md", 1)
+	params_file := strings.Replace(file, ".lmd", ".json", 1)
+	test_against_me := lmd.ReadAFile(basis_file)
+
+	// make a temp file
+	temp_file, temp_file_err := ioutil.TempFile(os.TempDir(), "lmd-test-")
+	if temp_file_err != nil {
+		log.Fatal(temp_file_err)
+	}
+	defer os.Remove(temp_file.Name())
+
+	// run LegalToMarkdown on the fixture
+	LegalToMarkdown(file, params_file, temp_file.Name())
 
 	// read the tempfile
 	i_made_this_file := lmd.ReadAFile(temp_file.Name())

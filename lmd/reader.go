@@ -74,7 +74,6 @@ func ParseTemplateToFindParameters(fileContents string) (string, string) {
 // function is responsible for unmarshalling the paramaters from yaml or json strings into (first a byte
 // array) and subsequently into the paramaters map which is returned to the calling function.
 func UnmarshallParameters(parameters string) map[string]string {
-	// TODO: make this smarter... should be able to also parse JSON if the YAML unmarshall fails
 	parameter_bytes := []byte(parameters)
 	param := make(map[string]string)
 	yaml.Unmarshal(parameter_bytes, &param)
