@@ -63,7 +63,7 @@ func testIndividualFileYAML(file string) bool {
 	defer os.Remove(temp_file.Name())
 
 	// run LegalToMarkdown on the fixture
-	LegalToMarkdown(file, "", temp_file.Name())
+	lmd.LegalToMarkdown(file, "", temp_file.Name())
 
 	// read the tempfile
 	i_made_this_file := lmd.ReadAFile(temp_file.Name())
@@ -131,7 +131,7 @@ func testIndividualFileJSON(file string) bool {
 	defer os.Remove(temp_file.Name())
 
 	// run LegalToMarkdown on the fixture
-	LegalToMarkdown(file, params_file, temp_file.Name())
+	lmd.LegalToMarkdown(file, params_file, temp_file.Name())
 
 	// read the tempfile
 	i_made_this_file := lmd.ReadAFile(temp_file.Name())
