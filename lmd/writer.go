@@ -4,10 +4,14 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"strings"
 )
 
 // WriteAFile is a convenience function for writing files.
 func WriteAFile(file_to_write string, contents_to_write string) bool {
+
+	// close up extraneous new lines
+	contents_to_write = strings.Replace(contents_to_write, "\n\n\n", "\n\n", -1)
 
 	// convert to byte array for writing
 	contents_as_byte_array := []byte(contents_to_write)
