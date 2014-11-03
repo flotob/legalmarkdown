@@ -164,8 +164,8 @@ func runThisOptionalClause(contents string, parameters map[string]string, clause
 
 		// there are two relevant regex's one for primary optional clauses and one to check if there are
 		// nested optional clauses
-		pri_pattern := regexp.MustCompile(fmt.Sprintf(`(?m)\[\{\{%v\}\}\s*?(.*?\n*?)\]`, clause))
-		sub_pattern := regexp.MustCompile(`(?m)\[\{\{(\S+?)\}\}\s*?`)
+		pri_pattern := regexp.MustCompile(fmt.Sprintf(`(?sm)\[\{\{%v\}\}\s*?(.*?\n*?)\]`, clause))
+		sub_pattern := regexp.MustCompile(`(?sm)\[\{\{(\S+?)\}\}\s*?`)
 
 		// first we check if there is a match within the overall content. are there any optional clauses
 		// at all? if there are then we dump the found group from the regex into the sub_clause string.
