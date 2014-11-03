@@ -12,6 +12,7 @@ type Header struct {
 	levelNum int
 	indent   int
 	style    int
+	resetVal string
 	beforVal string
 	currtVal string
 	afterVal string
@@ -68,9 +69,11 @@ func parseHeaders(parameters map[string]string, levelStyle bool, indentSlice []s
 		}
 
 		header.indent = (2 * header.levelNum)
+
 		header.reset = true
 
 		header.style, header.beforVal, header.currtVal, header.afterVal = defineHeaderStyle(paramVal)
+		header.resetVal = header.currtVal
 
 		headers[header.trigger] = header
 	}
@@ -92,6 +95,9 @@ func parseHeaders(parameters map[string]string, levelStyle bool, indentSlice []s
 		baseNum := len(indentSlice)
 		if head.indent != 0 && baseNum != 0 {
 			head.indent = (head.indent - (2 * baseNum))
+		}
+		if head.indent < 0 {
+			head.indent = 0
 		}
 	}
 
