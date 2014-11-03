@@ -1,9 +1,11 @@
 package lmd
 
 import (
+	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
+	"regexp"
 	"strings"
 )
 
@@ -12,6 +14,38 @@ func WriteAFile(file_to_write string, contents_to_write string) bool {
 
 	// close up extraneous new lines
 	contents_to_write = strings.Replace(contents_to_write, "\n\n\n", "\n\n", -1)
+
+	// TODO: SIGNATURE BLOCK...!
+	signatureBlock := regexp.MustCompile(`\@signature\((.*?):(.*?)\)`)
+	if signatureBlock.MatchString(contents_to_write) {
+
+		party1 := signatureBlock.FindAllStringSubmatch(contents_to_write, -1)[0][1]
+		party2 := signatureBlock.FindAllStringSubmatch(contents_to_write, -1)[0][2]
+
+		daBlock := fmt.Sprintf(`
+
+
+______________________________________
+Signed: %v
+
+
+
+______________________________________
+Date
+
+
+
+______________________________________
+Signed: %v
+
+
+
+______________________________________
+Date
+`, party1, party2)
+
+		contents_to_write = signatureBlock.ReplaceAllString(contents_to_write, daBlock)
+	}
 
 	// convert to byte array for writing
 	contents_as_byte_array := []byte(contents_to_write)
