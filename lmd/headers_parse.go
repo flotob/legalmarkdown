@@ -146,11 +146,11 @@ func assemblePreVal(leader string, headers map[string]*Header, nested bool, oldS
 	thisBeforVal := strings.TrimSpace(thisHeader.beforVal)
 
 	// if val is "Section preval" then the result should be "Section 10x"
-	if strings.HasSuffix(thisBeforVal, "preval") && thisBeforVal != "preval" {
-		reformedLeader = strings.Replace(thisBeforVal, "preval", "", 1)
-	} else {
+	// if strings.HasSuffix(thisBeforVal, "preval") && thisBeforVal != "preval" {
+	// 	reformedLeader = strings.Replace(thisBeforVal, "preval", "", 1)
+	// } else {
+	// }
 		reformedLeader = ""
-	}
 
 	// nesting pre and preval is possible, this section controls that.
 	if strings.HasSuffix(prevBeforVal, "pre") || strings.HasSuffix(prevBeforVal, "pre (") || strings.HasSuffix(prevBeforVal, "preval") {
