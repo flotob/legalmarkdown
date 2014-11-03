@@ -379,6 +379,10 @@ It can be a pain to count whether you are on level 5 or level 6 for a very compl
 
 When you are building documents sometime you simply want to put `date: @today`. Try it! At this point it formats dates according to standard formating outside of the US. But if you want to change that, then simply change the value of the field to `@today_us`. You do not need to have the name of the field be `date`; indeed, it can be any field name, the import part is that the value of the field is `@today` or `@today_us`.
 
+### Signature Block
+
+Want to have legalmarkdown build your signature block for you? Just type `@signature(party1:party2)` on a line.
+
 ### Citations
 
 Coming in v.1.0
