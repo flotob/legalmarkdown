@@ -28,6 +28,36 @@ func next_lettering(previous string) string {
 	return string(codepoint)
 }
 
+// prev_lettering is the opposite of next_lettering.
+func prev_lettering(previous string) string {
+
+	codepoint := []byte(previous)
+	finlpoint := codepoint[len(codepoint)-1]
+	var penlpoint byte
+
+	if len(codepoint) >= 2 {
+		penlpoint = codepoint[len(codepoint)-2]
+	} else {
+		penlpoint = byte(0)
+	}
+
+	if finlpoint == penlpoint {
+		if int(finlpoint) == 65 || int(finlpoint) == 97 {
+			codepoint[len(codepoint)-2] = finlpoint + 25
+			codepoint = codepoint[:len(codepoint)-1]
+		} else {
+			codepoint[len(codepoint)-1] = finlpoint - 1
+		}
+	} else {
+		if !(int(finlpoint) == 65 || int(finlpoint) == 97) {
+			codepoint[len(codepoint)-1] = finlpoint - 1
+		}
+	}
+
+	return string(codepoint)
+
+}
+
 // next_roman_upper increases a roman number by one position for upper cased roman
 // numerals by using the from_roman_to_arabic function which returns an integer
 // that is subsequently increased by one and then changed back to a roman number
@@ -35,6 +65,13 @@ func next_lettering(previous string) string {
 func next_roman_upper(previous string) string {
 	prev_as_digit := from_roman_to_arabic_upper(previous)
 	next_as_digit := prev_as_digit + 1
+	return from_arabic_to_roman_upper(next_as_digit)
+}
+
+// prev_roman_upper is the opposite of next_roman_upper
+func prev_roman_upper(previous string) string {
+	prev_as_digit := from_roman_to_arabic_upper(previous)
+	next_as_digit := prev_as_digit - 1
 	return from_arabic_to_roman_upper(next_as_digit)
 }
 
@@ -48,12 +85,26 @@ func next_roman_lower(previous string) string {
 	return from_arabic_to_roman_lower(next_as_digit)
 }
 
+// prev_roman_lower isthe opposite of next_roman_lower
+func prev_roman_lower(previous string) string {
+	prev_as_digit := from_roman_to_arabic_lower(previous)
+	next_as_digit := prev_as_digit - 1
+	return from_arabic_to_roman_lower(next_as_digit)
+}
+
 // next_numbering increases numbers which are presented as strings for the package
 // the function uses the strconv package first to convert the string to an integer
 // then it increases the integer by one and then converts it back to a string.
 func next_numbering(previous string) string {
 	prev_as_digit, _ := strconv.Atoi(previous)
 	next_as_digit := prev_as_digit + 1
+	return strconv.Itoa(next_as_digit)
+}
+
+// prev_numbering is the opposite of next_numbering
+func prev_numbering(previous string) string {
+	prev_as_digit, _ := strconv.Atoi(previous)
+	next_as_digit := prev_as_digit - 1
 	return strconv.Itoa(next_as_digit)
 }
 
