@@ -215,7 +215,8 @@ func assemblePreVal(leader string, headers map[string]*Header, nested bool, oldS
 	if oldStyle {
 		prevHeader = headers[leader[1:]]
 	} else {
-		prevHeader = headers[strconv.Itoa(strconv.Atoi(leader[1:])-1)]
+		tmp, _ := strconv.Atoi(leader[1:])
+		prevHeader = headers[strconv.Itoa(tmp-1)]
 	}
 	prevBeforVal := strings.TrimSpace(prevHeader.beforVal)
 	thisBeforVal := strings.TrimSpace(thisHeader.beforVal)
