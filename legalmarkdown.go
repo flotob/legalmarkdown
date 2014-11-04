@@ -27,8 +27,8 @@ func main() {
 	legalmd.Commands = []cli.Command{
 
 		{
-			Name:      "tomd",
-			ShortName: "m",
+			Name:      "parse",
+			ShortName: "p",
 			Usage:     "parse to markdown",
 			Flags: []cli.Flag{
 				cli.StringFlag{
@@ -48,8 +48,8 @@ func main() {
 		},
 
 		{
-			Name:      "headers",
-			ShortName: "d",
+			Name:      "assemble",
+			ShortName: "a",
 			Usage:     "create yaml frontmatter",
 			Flags: []cli.Flag{
 				cli.StringFlag{
