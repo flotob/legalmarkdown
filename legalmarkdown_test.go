@@ -113,7 +113,6 @@ func TestLegalToMarkdownWithJSON(t *testing.T) {
 
 }
 
-
 func testIndividualFileJSON(file string) bool {
 	// announce thyself
 	fmt.Println(CLR_0, "Testing file: ", file, CLR_N)

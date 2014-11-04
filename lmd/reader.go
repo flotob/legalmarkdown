@@ -1,9 +1,9 @@
 package lmd
 
 import (
+	"fmt"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
-	"fmt"
 	"log"
 	"os"
 	"regexp"

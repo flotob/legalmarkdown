@@ -19,47 +19,47 @@ package lmd
 // These are passed to the primary entrance function to the parsing process.
 func LegalToMarkdown(contents string, parameters_file string, output string) {
 
-    // read the template file and integrate any included partials (`@include PARTIAL` within the text)
-    contents = ReadAFile(contents)
-    contents = ImportIncludedFiles(contents)
+	// read the template file and integrate any included partials (`@include PARTIAL` within the text)
+	contents = ReadAFile(contents)
+	contents = ImportIncludedFiles(contents)
 
-    // once the content files have been read, then move along to parsing the parameters.
-    var parameters string
-    var amended_parameters map[string]string
-    if parameters_file != "" {
+	// once the content files have been read, then move along to parsing the parameters.
+	var parameters string
+	var amended_parameters map[string]string
+	if parameters_file != "" {
 
-        // first pull out of the file, just as we do if there is no specific params file
-        var merged_parameters map[string]string
-        parameters, contents = ParseTemplateToFindParameters(contents)
-        merged_parameters = UnmarshallParameters(parameters)
+		// first pull out of the file, just as we do if there is no specific params file
+		var merged_parameters map[string]string
+		parameters, contents = ParseTemplateToFindParameters(contents)
+		merged_parameters = UnmarshallParameters(parameters)
 
-        // second read and unmarshall the parameters from the parameters file
-        parameters = ReadAFile(parameters_file)
-        amended_parameters = UnmarshallParameters(parameters)
+		// second read and unmarshall the parameters from the parameters file
+		parameters = ReadAFile(parameters_file)
+		amended_parameters = UnmarshallParameters(parameters)
 
-        // finally, merge the amended_parameters (from the parameters file) into the
-        //   merged_parameters (from the content file) such that the amended_parameters
-        //   overwritethe merged_parameters.
-        amended_parameters = MergeParameters(amended_parameters, merged_parameters)
+		// finally, merge the amended_parameters (from the parameters file) into the
+		//   merged_parameters (from the content file) such that the amended_parameters
+		//   overwritethe merged_parameters.
+		amended_parameters = MergeParameters(amended_parameters, merged_parameters)
 
-    } else {
+	} else {
 
-        // if there is no parameters file passed, simply pull the params out of the content file.
-        parameters, contents = ParseTemplateToFindParameters(contents)
-        amended_parameters = UnmarshallParameters(parameters)
+		// if there is no parameters file passed, simply pull the params out of the content file.
+		parameters, contents = ParseTemplateToFindParameters(contents)
+		amended_parameters = UnmarshallParameters(parameters)
 
-    }
+	}
 
-    contents = legalToMarkdownParser(contents, amended_parameters)
+	contents = legalToMarkdownParser(contents, amended_parameters)
 
-    WriteAFile(output, contents)
+	WriteAFile(output, contents)
 }
 
 // MakeYAMLFrontMatter is a convenience function which will parse the contents of a template
 // to formulate the YAML Front Matter.
 func MakeYAMLFrontMatter(contents string) string {
-    // TODO: it all.
-    return contents
+	// TODO: it all.
+	return contents
 }
 
 // legalToMarkdownParser is the overseer of the parsing functionality. The contents of the file
@@ -74,8 +74,8 @@ func MakeYAMLFrontMatter(contents string) string {
 // contents so that that function may call the appropriate writer for outputting the parsed document
 // back to the user.
 func legalToMarkdownParser(contents string, parameters map[string]string) string {
-    contents, parameters = HandleMixins(contents, parameters)
-    headers := SetTheHeaders(contents, parameters)
-    contents = HandleTheHeaders(contents, headers)
-    return contents
+	contents, parameters = HandleMixins(contents, parameters)
+	headers := SetTheHeaders(contents, parameters)
+	contents = HandleTheHeaders(contents, headers)
+	return contents
 }
