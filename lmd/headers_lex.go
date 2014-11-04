@@ -6,6 +6,16 @@ import (
 	"strings"
 )
 
+// Header is the primary type which establishes how the structured headers will be parsed.
+// Trigger is the string at the beginning of the line in the parsing block which triggers
+// this header. Reset is a boolean which lets the parser know whether this header is to be
+// reset or not. Level Number is an integer of which level of the header this particular
+// header is. Indent is the number of spaces which the header should be indented. Style
+// is pulled from the case switch in the defineHeaderStyle function. ResetVal is the value
+// which the header is reset to -- this is always the value which the header is initiated
+// to. BeforeVal is the string which is placed before the currrent value. CurrtVal is the
+// current value of the header which is iterated as the tree parser performs its work.
+// AfterVal is the string which goes after the currtVal -- typically it is only one char.
 type Header struct {
 	trigger  string
 	reset    bool
@@ -18,7 +28,22 @@ type Header struct {
 	afterVal string
 }
 
-// SetTheHeaders does shit ...
+// SetTheHeaders is the primary parser of structured headers. It parses the styles and header
+// structure and establishes a map of triggers and Header structs delimiting the structured
+// headers.
+//
+// It begins by parsing the "level-style" parameter to determine if the original style "llll."
+// headers are used by the template or if the new style headers "l4." are used.
+//
+// Second the function parses the "no-indent" parameter to determine which of the headers are
+// not to be indented. These are put into a slice.
+//
+// Third it parses the "no-reset" parameter to determine which of the headers are not to be
+// reset. These are also put into a slice.
+//
+// Finally the function calls the main parsing function "parseHeaders" which returns
+// the map of structs and triggers for each of the relevant headers by the parser. This
+// map is what is returned to the calling function.
 func SetTheHeaders(contents string, parameters map[string]string) map[string]*Header {
 	levelStyle := parseLevelStyle(parameters["level-style"])
 	delete(parameters, "level-style")
@@ -104,6 +129,24 @@ func parseHeaders(parameters map[string]string, levelStyle bool, indentSlice []s
 	return headers
 }
 
+// defineHeaderStyle sets the style integer according to the 10 relevant types which are
+// allowed in legalmarkdown. type1 sets the *Header.style to 1 and is for uppercase
+// roman numerals followed by a period. type2 sets the *Header.style to 2 and is for
+// uppercase roman numerals encased in parentheses. type3 sets the *Header.style to
+// 3 and is for lowercase roman numerals followed by a period. type4 sets the *Header
+// .style to 4 and is for lowercase roman numerals encased in parentheses. type5 sets
+// the *Header.style to 5 and is for uppercase letters followed by a period. type6
+// sets the *Header.style to 6 and is for uppercase letters encased in parentheses.
+// type7 sets the *Headers.style to 7 and is for lowercase letters followed by a
+// period. type8 sets the *Header.style to 8 and is for lowercase letters encased in
+// parentheses. type9 sets the *Header.style to 9 and is for numbers encased in
+// parentheses. type0 sets the *Header.style to 0 and is for numbers followed by a
+// period. This is also the dot.
+//
+// in addition to returning the style integer, the following strings are parsed from
+// the parameter which is passed to the function: the *Header.beforVal, the *Header.
+// currtVal and the *Header.afterVal all of which are simply pulled from the string
+// parse which is also used to determine the style type.
 func defineHeaderStyle(h string) (int, string, string, string) {
 
 	// set all the regexps first. roman numerals are parsed first as matches
