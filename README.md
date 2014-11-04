@@ -408,6 +408,6 @@ Coming in v.1.0
 
 MIT License - (c) 2014 - Eris Industries, Ltd.. All copyrights are owned by [Eris Industres, Ltd.](https://erisindustries.com). See License file.
 
-This software is provided as is and specifically disclaims any implied warranties of fitness for any purpose whatsoever. By using this software you agree to hold harmless Watershed Legal Services and its Members for any perceived harm that using this software may have caused you.
+This software is provided as is and specifically disclaims any implied warranties of fitness for any purpose whatsoever. By using this software you agree to hold harmless Eris Industries Limited and any of its directors or employees for any perceived harm that using this software may have caused you.
 
 In other words, don't be a jerk.
