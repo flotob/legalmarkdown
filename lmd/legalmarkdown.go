@@ -48,7 +48,7 @@ func MakeYAMLFrontMatter(contentsFile string, parametersFile string, outputFile 
 
 }
 
-// MarkdownToPDF
+// MarkdownToPDF ...
 func MarkdownToPDF(contentsFile string, parametersFile string, outputFile string) {
 
 	contents, parameters := setUp(contentsFile, parametersFile)
@@ -61,6 +61,20 @@ func MarkdownToPDF(contentsFile string, parametersFile string, outputFile string
 
 }
 
+// GetTheParameters ...
+func GetTheParameters(contentsFile string) string {
+
+	_, parameters := setUp(contentsFile, "")
+
+	if len(parameters) == 0 {
+		contents, _ := setUp(contentsFile, "")
+		return AssembleParametersIntoJSON(contents, parameters)
+	} else {
+		return jsonizeParameters(parameters)
+	}
+}
+
+// setUp ...
 func setUp(contentsFile string, parametersFile string) (string, map[string]string) {
 
 	// read the template file and integrate any included partials (`@include PARTIAL` within the text)

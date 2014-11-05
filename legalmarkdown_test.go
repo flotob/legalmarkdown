@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/eris-ltd/legalmarkdown/lmd"
 	"io/ioutil"
@@ -26,7 +27,7 @@ func TestLegalToMarkdownWithYAML(t *testing.T) {
 	// glob the files
 	testfiles, readError := filepath.Glob(testFilesPath)
 	if readError != nil {
-		log.Fatal(readError)
+		t.Error(readError)
 	}
 
 	// set up passed and failed slices
@@ -40,8 +41,7 @@ func TestLegalToMarkdownWithYAML(t *testing.T) {
 			passed = append(passed, file)
 		} else {
 			failed = append(failed, file)
-			reportResults(passed, failed)
-			log.Fatal("Fast fail.")
+			t.Error("Fast fail.")
 		}
 	}
 
@@ -94,7 +94,7 @@ func TestLegalToMarkdownWithJSON(t *testing.T) {
 	// glob the files
 	testfiles, readError := filepath.Glob(testFilesPath)
 	if readError != nil {
-		log.Fatal(readError)
+		t.Error(readError)
 	}
 
 	// set up passed and failed slices
@@ -108,8 +108,7 @@ func TestLegalToMarkdownWithJSON(t *testing.T) {
 			passed = append(passed, file)
 		} else {
 			failed = append(failed, file)
-			reportResults(passed, failed)
-			log.Fatal("Fast fail.")
+			t.Error("Fast fail.")
 		}
 	}
 
@@ -163,7 +162,7 @@ func TestLegalToMarkdownHeaders(t *testing.T) {
 	// glob the files
 	testfiles, readError := filepath.Glob(testFilesPath)
 	if readError != nil {
-		log.Fatal(readError)
+		t.Error(readError)
 	}
 
 	// set up passed and failed slices
@@ -177,8 +176,7 @@ func TestLegalToMarkdownHeaders(t *testing.T) {
 			passed = append(passed, file)
 		} else {
 			failed = append(failed, file)
-			reportResults(passed, failed)
-			log.Fatal("Fast fail.")
+			t.Error("Fast fail.")
 		}
 	}
 
@@ -222,6 +220,54 @@ func testIndividualFileHeaders(file string) bool {
 
 }
 
+func TestGetParameters(t *testing.T) {
+	fmt.Println(CLR_B, "\n\tTesting Get Parameters\n", CLR_N)
+
+	basisFile := filepath.Join(".", "spec", "json", "30.block_all_leader_types.json")
+	param := make(map[string]string)
+	file_buffer, _ := ioutil.ReadFile(basisFile)
+	json.Unmarshal(file_buffer, &param)
+	paramsAsJsonByteArray, _ := json.Marshal(param)
+	basis := string(paramsAsJsonByteArray)
+
+	testFile1 := filepath.Join(".", "spec", "30.block_all_leader_types.lmd")
+	test1 := lmd.GetTheParameters(testFile1)
+
+	if test1 != basis {
+		fmt.Println(CLR_R, "NOOOOOOOOOOOOOOOOO.\n", CLR_N)
+		fmt.Println(CLR_G, "Expected =>", CLR_N)
+		fmt.Println(basis)
+		fmt.Println(CLR_R, "Result =>", CLR_N)
+		fmt.Println(test1)
+		t.Error("JSONizing parameters #1 -- from YAML front matter -- failed.\n")
+	} else {
+		fmt.Println(CLR_G, "JSONizing parameters #1 -- from YAML front matter -- passed.\n", CLR_N)
+	}
+
+	testFile2 := filepath.Join(".", "spec", "json", "30.block_all_leader_types.lmd")
+	test2 := lmd.GetTheParameters(testFile2)
+	test2 = strings.Replace(test2, `level-style":"",`, "", 1)
+	test2 = strings.Replace(test2, `,"no-reset":""`, "", 1)
+	test2 = strings.Replace(test2, `""no-indent":""`, `"no-indent":""`, 1)
+
+	for k, _ := range param {
+		param[k] = ""
+	}
+	paramsAsJsonByteArray, _ = json.Marshal(param)
+	basis = string(paramsAsJsonByteArray)
+
+	if test2 != basis {
+		fmt.Println(CLR_R, "NOOOOOOOOOOOOOOOOO.\n", CLR_N)
+		fmt.Println(CLR_G, "Expected =>", CLR_N)
+		fmt.Println(basis)
+		fmt.Println(CLR_R, "Result =>", CLR_N)
+		fmt.Println(test2)
+		t.Error("JSONizing parameters #2 -- made from a raw LMD -- failed.\n")
+	} else {
+		fmt.Println(CLR_G, "JSONizing parameters #2 -- made from a raw LMD -- passed.\n", CLR_N)
+	}
+}
+
 func TestLegalToRenderingToPDF(t *testing.T) {
 	fmt.Println(CLR_B, "\n\tTesting Rendering to PDF\n", CLR_N)
 
@@ -230,7 +276,7 @@ func TestLegalToRenderingToPDF(t *testing.T) {
 	// make a temp file
 	tempFile, tempFileErr := ioutil.TempFile(os.TempDir(), "lmd-test-")
 	if tempFileErr != nil {
-		log.Fatal(tempFileErr)
+		t.Error(tempFileErr)
 	}
 	defer os.Remove(tempFile.Name())
 
@@ -241,7 +287,7 @@ func TestLegalToRenderingToPDF(t *testing.T) {
 	iMadeThisFile := lmd.ReadAFile(tempFile.Name())
 
 	if iMadeThisFile == "" {
-		log.Fatal("Did not create a pdf.")
+		t.Error("Did not create a pdf.")
 	}
 }
 

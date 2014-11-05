@@ -1,7 +1,9 @@
 package lmd
 
 import (
+	"encoding/json"
 	"gopkg.in/yaml.v2"
+	"log"
 	"regexp"
 	"strconv"
 )
@@ -24,6 +26,41 @@ func HandleParameterAssembly(contents string, parameters map[string]string) stri
 	contents = reAssembleTheFile(contents, mixins, optClauses, headers, styles)
 
 	return contents
+
+}
+
+// HandleParameterAssemblyJSON ...
+func AssembleParametersIntoJSON(contents string, parameters map[string]string) string {
+
+	mixins := make(map[string]string)
+	optClauses := make(map[string]string)
+	headers := make(map[string]string)
+	styles := make(map[string]string)
+
+	contents, mixins = findTheMixins(contents, parameters)
+	contents, optClauses = findTheOptClauses(contents, parameters)
+	contents, headers, styles = findTheLeaders(contents, parameters)
+
+	for k, v := range mixins {
+		parameters[k] = v
+	}
+	for k, v := range optClauses {
+		parameters[k] = v
+	}
+	for k, v := range headers {
+		parameters[k] = v
+	}
+	for k, v := range styles {
+		parameters[k] = v
+	}
+
+	paramsAsJsonByteArray, err := json.Marshal(parameters)
+
+	if err != nil {
+		log.Fatal("JSON assembly error.")
+	}
+
+	return string(paramsAsJsonByteArray)
 
 }
 

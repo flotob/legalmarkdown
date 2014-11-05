@@ -1,6 +1,7 @@
 package lmd
 
 import (
+	"encoding/json"
 	"fmt"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
@@ -101,4 +102,17 @@ func mergeParameters(superior_map map[string]string, sublimated_map map[string]s
 		sublimated_map[k] = v
 	}
 	return sublimated_map
+}
+
+// jsonizeParameters ...
+func jsonizeParameters(parameters map[string]string) string {
+
+	paramsAsJsonByteArray, err := json.Marshal(parameters)
+
+	if err != nil {
+		log.Fatal("Could not read the parameters")
+	}
+
+	return string(paramsAsJsonByteArray)
+
 }
