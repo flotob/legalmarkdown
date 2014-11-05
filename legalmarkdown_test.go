@@ -222,6 +222,29 @@ func testIndividualFileHeaders(file string) bool {
 
 }
 
+func TestLegalToRenderingToPDF(t *testing.T) {
+	fmt.Println(CLR_B, "\n\tTesting Rendering to PDF\n", CLR_N)
+
+	testFile := filepath.Join(".", "spec", "00.load_write_no_action.md")
+
+	// make a temp file
+	tempFile, tempFileErr := ioutil.TempFile(os.TempDir(), "lmd-test-")
+	if tempFileErr != nil {
+		log.Fatal(tempFileErr)
+	}
+	defer os.Remove(tempFile.Name())
+
+	// dowit
+	lmd.MarkdownToPDF(testFile, "", tempFile.Name())
+
+	// read the tempfile
+	iMadeThisFile := lmd.ReadAFile(tempFile.Name())
+
+	if iMadeThisFile == "" {
+		log.Fatal("Did not create a pdf.")
+	}
+}
+
 func reportResults(passed []string, failed []string) {
 
 	fmt.Println("")

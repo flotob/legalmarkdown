@@ -48,7 +48,6 @@ func MakeYAMLFrontMatter(contentsFile string, parametersFile string, outputFile 
 
 }
 
-
 // MarkdownToPDF
 func MarkdownToPDF(contentsFile string, parametersFile string, outputFile string) {
 
@@ -58,6 +57,7 @@ func MarkdownToPDF(contentsFile string, parametersFile string, outputFile string
 	headers := SetTheHeaders(contents, parameters)
 	contents = HandleTheHeaders(contents, headers)
 
+	writeToPdf(contents, outputFile)
 
 }
 
