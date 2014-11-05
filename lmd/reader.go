@@ -35,12 +35,12 @@ func ReadAFile(file_to_read string) string {
 	return contents
 }
 
-// ImportIncludedFiles handles importing files into the primary contents string. First it compiles a
+// importIncludedFiles handles importing files into the primary contents string. First it compiles a
 // regular expression which will search for the trigger string `@include PARTIAL`.
 //
 // If one or more match is found, the function will simply replace the `@include PARTIAL` line with the
 // read in string of the included partial. The complete string will be returned to the calling function.
-func ImportIncludedFiles(fileContents string) string {
+func importIncludedFiles(fileContents string) string {
 	importRegExp := regexp.MustCompile(`(?m)^@include (.*?)$`)
 
 	if importRegExp.MatchString(fileContents) {
@@ -54,13 +54,13 @@ func ImportIncludedFiles(fileContents string) string {
 	}
 }
 
-// ParseTemplateToFindParameters handles paramaters which are passed to the parser either separately from the
+// parseTemplateToFindParameters handles paramaters which are passed to the parser either separately from the
 // template file or as part of the template file. This function manages the process of stripping paramaters
 // out of a template file. The function first compiles a YAML Front Matter regular expression. Then if a
 // match for that regular expression is found, the contents of the template file are replaced with an empty
 // string and the YAML front matter is returned, along with the replaced contents (both as strings) to the
 // calling function.
-func ParseTemplateToFindParameters(fileContents string) (string, string) {
+func parseTemplateToFindParameters(fileContents string) (string, string) {
 	yamlRegExp := regexp.MustCompile(`(?sm)\A(---\s*\n.*?)(^---\s*\n)`)
 
 	if yamlRegExp.MatchString(fileContents) {
@@ -72,10 +72,10 @@ func ParseTemplateToFindParameters(fileContents string) (string, string) {
 	}
 }
 
-// UnmarshallParameters unmarshalls paramaters either in yaml (TBD) or json into the paramaters map. This
+// unmarshallParameters unmarshalls paramaters either in yaml (TBD) or json into the paramaters map. This
 // function is responsible for unmarshalling the paramaters from yaml or json strings into (first a byte
 // array) and subsequently into the paramaters map which is returned to the calling function.
-func UnmarshallParameters(parameters string) map[string]string {
+func unmarshallParameters(parameters string) map[string]string {
 	parameter_bytes := []byte(parameters)
 	param := make(map[string]string)
 	yaml.Unmarshal(parameter_bytes, &param)
@@ -93,10 +93,10 @@ func UnmarshallParameters(parameters string) map[string]string {
 	return param
 }
 
-// MergeParameters is a convenience function which will merge two hash maps into one. Any conflicting parameters
+// mergeParameters is a convenience function which will merge two hash maps into one. Any conflicting parameters
 // in the two maps will be resolved in favor of the *first* map which is passed. That is to say that the first
 // map passed to the function, the `superior_map` map, will overwrite the `sublimated_map`.
-func MergeParameters(superior_map map[string]string, sublimated_map map[string]string) map[string]string {
+func mergeParameters(superior_map map[string]string, sublimated_map map[string]string) map[string]string {
 	for k, v := range superior_map {
 		sublimated_map[k] = v
 	}

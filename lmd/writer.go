@@ -9,10 +9,10 @@ import (
 	"strings"
 )
 
-// WriteAFile is a convenience function for writing files. It also does the final cleanup
+// writeAFile is a convenience function for writing files. It also does the final cleanup
 // by cleaning extraneous new lines and after that parsing and inserting a signature block
 // if such is requested by the user.
-func WriteAFile(file_to_write string, contents_to_write string) bool {
+func writeAFile(file_to_write string, contents_to_write string) bool {
 
 	// close up extraneous new lines
 	contents_to_write = strings.Replace(contents_to_write, "\n\n\n", "\n\n", -1)
