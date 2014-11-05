@@ -1,20 +1,20 @@
 ---
 
 # Structured Headers
-level-1: "# Article (1)"
-level-2: "*Section (a)"
-level-3: "#$%^&* A."
-level-4: "|}{POIUYTR (A)"
-level-5: "~!@#$%^&* a."
-level-6: "123645789 X."
-level-7: "987654321 (x)"
-level-8: "098765432 1."
-level-9: "=-098765432 x."
+level-1: '# Article (1)'
+level-2: '*Section (a)'
+level-3: '#$%^&* A.'
+level-4: '|}{POIUYTR (A)'
+level-5: ~!@#$%^&* a.
+level-6: 123645789 X.
+level-7: 987654321 (x)
+level-8: 098765432 1.
+level-9: =-098765432 x.
 
 # Properties
-no-indent: "l1., l2., l3., l4., l5., l6., l7., l8., l9."
-no-reset: "l1., l2., l3., l4., l5., l6., l7., l8., l9."
-level-style: "l1."
+level-style: l1.
+no-indent: l1., l2., l3., l4., l5., l6., l7., l8., l9.
+no-reset: l1., l2., l3., l4., l5., l6., l7., l8., l9.
 
 ---
 

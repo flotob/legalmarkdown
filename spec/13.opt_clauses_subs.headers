@@ -1,8 +1,6 @@
 ---
 
 # Optional Clauses
-test3: "true"
-test4: "false"
 test_2: "true"
 test_3: "true"
 test_4: "true"
@@ -11,6 +9,8 @@ test_6: "false"
 test_7: "true"
 test_8: "false"
 test_9: "true"
+test3: "true"
+test4: "false"
 
 ---
 

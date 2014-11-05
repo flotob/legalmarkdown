@@ -3,23 +3,23 @@
 # Mixins
 co_name: "12345678"
 co_reg: "12345678"
-dirs_number: "five (5)"
-dirs_term: "one (3) year"
-jurisdiction: "the State of Tennessee"
-party1: "asdfghjk"
-party1_address: "234567890pokjhgfds"
-party1_full: "asdfghjkl"
+dirs_number: five (5)
+dirs_term: one (3) year
+jurisdiction: the State of Tennessee
+party1: asdfghjk
+party1_address: 234567890pokjhgfds
+party1_full: asdfghjkl
 party1_reg: ""
 party1_rep: ""
-party1_short: "(\"qwertyuikjnbvcx\")"
+party1_short: ("qwertyuikjnbvcx")
 party1_type: ""
-party2: "poiuytrew"
-party2_address: "234567i8o9poikuyhgrfeds"
-party2_full: "wertyuilkjhgfdsa"
-party2_reg: "the State of Tennessee"
-party2_rep: "wertyuiop"
-party2_short: "(\"sdfghjkl;.kjnbvcdsx\")"
-party2_type: "Limited Liability Corporation"
+party2: poiuytrew
+party2_address: 234567i8o9poikuyhgrfeds
+party2_full: wertyuilkjhgfdsa
+party2_reg: the State of Tennessee
+party2_rep: wertyuiop
+party2_short: ("sdfghjkl;.kjnbvcdsx")
+party2_type: Limited Liability Corporation
 party3: ""
 party3_address: ""
 party3_full: ""
@@ -27,7 +27,7 @@ party3_reg: ""
 party3_rep: ""
 party3_short: ""
 party3_type: ""
-regulating_act: "asdfghjklkjhgfds"
+regulating_act: asdfghjklkjhgfds
 
 # Optional Clauses
 co_private: "true"
@@ -102,14 +102,14 @@ tit_by_laws: "true"
 tit_op_agree: "false"
 
 # Structured Headers
-level-1: "# Article 1."
-level-2: "*Section 1."
-level-3: "(a)"
+level-1: '# Article 1.'
+level-2: '*Section 1.'
+level-3: (a)
 
 # Properties
-no-indent: "l., ll., lll."
-no-reset: "l., ll., lll."
-level-style: "l."
+level-style: l.
+no-indent: l., ll., lll.
+no-reset: l., ll., lll.
 
 ---
 
@@ -207,6 +207,7 @@ lll. such indemnification is provided by the Company, in its sole discretion, pu
 l. Amendments
 ll. Amendments*. [{{dirs_can_amend_bylaws}} The Board of Directors is expressly empowered to adopt, amend or repeal [{{tit_by_laws}} these Bylaws] [{{tit_op_agree}} this Agreement].] The Shareholders shall [{{dirs_can_amend_bylaws}} also ]have power to adopt, amend or repeal [{{tit_by_laws}} these Bylaws][{{tit_op_agree}} this Agreement][{{shares_in_classes}} ; provided, however, that, in addition to any vote of the holders of any class or series of stock of the Company required by the Act, such action by Shareholders shall require the affirmative vote of the holders of at least a majority of the voting power of all of the then-outstanding shares of the capital stock of the Company entitled to vote generally in the election of Directors, voting together as a single class].
 ```
+
 as;lfgakhl qpwoityq worituy adgkahjlbkjhs blkajdfh glqkertuqw epfioag
 
 q;lrkgtqu rtopiquer tpeoruiqp e50692356-10 386

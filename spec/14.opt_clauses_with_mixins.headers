@@ -1,9 +1,9 @@
 ---
 
 # Mixins
-test1: "mnbvcx"
-test2: "poiuytre"
-test3: "qwertyu"
+test1: mnbvcx
+test2: poiuytre
+test3: qwertyu
 
 # Optional Clauses
 test_2: "true"

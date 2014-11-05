@@ -1,14 +1,14 @@
 ---
 
 # Structured Headers
-level-1: "Article 100."
-level-2: "Section X."
-level-3: "P."
+level-1: Article 100.
+level-2: Section X.
+level-3: P.
 
 # Properties
-no-indent: "l., ll., lll."
-no-reset: "l., ll., lll."
 level-style: ""
+no-indent: l., ll., lll.
+no-reset: l., ll., lll.
 
 ---
 

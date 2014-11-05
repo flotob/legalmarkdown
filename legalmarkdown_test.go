@@ -155,6 +155,8 @@ func testIndividualFileJSON(file string) bool {
 }
 
 func TestLegalToMarkdownHeaders(t *testing.T) {
+	fmt.Println(CLR_B, "\n\tTesting Make YAML Front Matter\n", CLR_N)
+
 	// create the path properly to the glob command
 	testFilesPath := filepath.Join(".", "spec", "*.lmd")
 
@@ -185,8 +187,6 @@ func TestLegalToMarkdownHeaders(t *testing.T) {
 }
 
 func testIndividualFileHeaders(file string) bool {
-	fmt.Println(CLR_B, "\n\tTesting Make YAML Front Matter\n", CLR_N)
-
 	// announce thyself
 	fmt.Println(CLR_0, "Testing file: ", file, CLR_N)
 

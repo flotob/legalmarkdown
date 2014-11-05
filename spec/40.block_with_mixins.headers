@@ -2,19 +2,19 @@
 
 # Mixins
 test-5: "987654"
-test1: "lkjuytrd"
+test_78: )(*&^%$#@
+test1: lkjuytrd
 test4: "123456789"
-test_78: ")(*&^%$#@"
 
 # Structured Headers
-level-1: "Article 1."
-level-2: "Section 1."
+level-1: Article 1.
+level-2: Section 1.
 level-3: "1."
 
 # Properties
-no-indent: "l., ll., lll."
-no-reset: ""
 level-style: ""
+no-indent: l., ll., lll.
+no-reset: ""
 
 ---
 

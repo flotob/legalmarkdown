@@ -1,14 +1,14 @@
 ---
 
 # Structured Headers
-level-1: "Article 1."
-level-2: "pre (a)"
-level-3: "pre (i)"
+level-1: Article 1.
+level-2: pre (a)
+level-3: pre (i)
 
 # Properties
-no-indent: "l., ll., lll."
-no-reset: "l., ll., lll."
 level-style: ""
+no-indent: l., ll., lll.
+no-reset: l., ll., lll.
 
 ---
 

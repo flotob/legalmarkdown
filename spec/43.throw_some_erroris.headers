@@ -56,9 +56,9 @@ level-2: ""
 level-3: ""
 
 # Properties
+level-style: ""
 no-indent: ""
 no-reset: ""
-level-style: ""
 
 ---
 
