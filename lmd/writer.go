@@ -12,7 +12,7 @@ import (
 // writeAFile is a convenience function for writing files. It also does the final cleanup
 // by cleaning extraneous new lines and after that parsing and inserting a signature block
 // if such is requested by the user.
-func writeAFile(file_to_write string, contents_to_write string) bool {
+func writeAFile(file_to_write string, contents_to_write string) {
 
 	// close up extraneous new lines
 	contents_to_write = strings.Replace(contents_to_write, "\n\n\n", "\n\n", -1)
@@ -54,7 +54,6 @@ Date
 	// if "-" is passed as the file to write, wtite to from stdout instead.
 	if file_to_write == " -" || file_to_write == "-" {
 		os.Stdout.Write(contents_as_byte_array)
-		return true
 	}
 
 	// write whole the body
@@ -62,5 +61,5 @@ Date
 	if file_write_err != nil {
 		log.Fatal(file_write_err)
 	}
-	return true
+
 }
