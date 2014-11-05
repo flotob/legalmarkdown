@@ -6,7 +6,6 @@
 package main
 
 import (
-	"fmt"
 	"github.com/codegangsta/cli"
 	"github.com/eris-ltd/legalmarkdown/lmd"
 	"log"
@@ -25,6 +24,27 @@ func main() {
 	legalmd.Email = "contact@erisindustries.com"
 
 	legalmd.Commands = []cli.Command{
+
+		{
+			Name:      "assemble",
+			ShortName: "a",
+			Usage:     "create yaml frontmatter",
+			Flags: []cli.Flag{
+				cli.StringFlag{
+					Name:  "t, template",
+					Usage: "template file to be parsed",
+				},
+				cli.StringFlag{
+					Name:  "p, parameters",
+					Usage: "parameters file to be parsed",
+				},
+				cli.StringFlag{
+					Name:  "o, output",
+					Usage: "output file to be written",
+				},
+			},
+			Action: cliMakeYAMLFrontMatter,
+		},
 
 		{
 			Name:      "parse",
@@ -48,24 +68,41 @@ func main() {
 		},
 
 		{
-			Name:      "assemble",
-			ShortName: "a",
-			Usage:     "create yaml frontmatter",
+			Name:      "render",
+			ShortName: "r",
+			Usage:     "render from lmd to pdf or markdown to pdf",
 			Flags: []cli.Flag{
 				cli.StringFlag{
 					Name:  "t, template",
 					Usage: "template file to be parsed",
 				},
 				cli.StringFlag{
+					Name:  "p, parameters",
+					Usage: "parameters file to be parsed",
+				},
+				cli.StringFlag{
 					Name:  "o, output",
 					Usage: "output file to be written",
 				},
 			},
-			Action: cliMakeYAMLFrontMatter,
+			Action: cliMarkdownToPDF,
 		},
 	}
 
 	legalmd.Run(os.Args)
+}
+
+func cliMakeYAMLFrontMatter(c *cli.Context) {
+
+	if c.String("template") == "" {
+		log.Fatal("Please specify a template file to parse with the --template or -t flag.")
+	}
+
+	contents := c.String("template")
+	parameters := c.String("parameters")
+	output := c.String("output")
+
+	lmd.MakeYAMLFrontMatter(contents, parameters, output)
 }
 
 func cliLegalToMarkdown(c *cli.Context) {
@@ -85,9 +122,19 @@ func cliLegalToMarkdown(c *cli.Context) {
 	lmd.LegalToMarkdown(contents, parameters, output)
 }
 
-func cliMakeYAMLFrontMatter(c *cli.Context) {
+func cliMarkdownToPDF(c *cli.Context) {
 
-	contents := lmd.ReadAFile(c.String("template"))
-	fmt.Print(contents)
+	if c.String("template") == "" {
+		log.Fatal("Please specify a template file to parse with the --template or -t flag.")
+	}
 
+	if c.String("output") == "" {
+		log.Fatal("Please specify an output file to write to with the --output or -o flag.")
+	}
+
+	contents := c.String("template")
+	parameters := c.String("parameters")
+	output := c.String("output")
+
+	lmd.MarkdownToPDF(contents, parameters, output)
 }

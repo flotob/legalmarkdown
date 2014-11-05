@@ -18,13 +18,15 @@ const CLR_B = "\x1b[34;1m"
 const CLR_N = "\x1b[0m"
 
 func TestLegalToMarkdownWithYAML(t *testing.T) {
+	fmt.Println(CLR_B, "\n\tTesting YAML Based Parsing\n", CLR_N)
+
 	// create the path properly to the glob command
-	test_files_path := filepath.Join(".", "spec", "*.lmd")
+	testFilesPath := filepath.Join(".", "spec", "*.lmd")
 
 	// glob the files
-	testfiles, read_error := filepath.Glob(test_files_path)
-	if read_error != nil {
-		log.Fatal(read_error)
+	testfiles, readError := filepath.Glob(testFilesPath)
+	if readError != nil {
+		log.Fatal(readError)
 	}
 
 	// set up passed and failed slices
@@ -33,8 +35,8 @@ func TestLegalToMarkdownWithYAML(t *testing.T) {
 
 	// run the unit tests
 	for _, file := range testfiles {
-		success_or_fail := testIndividualFileYAML(file)
-		if success_or_fail {
+		successOrFail := testIndividualFileYAML(file)
+		if successOrFail {
 			passed = append(passed, file)
 		} else {
 			failed = append(failed, file)
@@ -52,45 +54,47 @@ func testIndividualFileYAML(file string) bool {
 	fmt.Println(CLR_0, "Testing file: ", file, CLR_N)
 
 	// set the basis and read it into memory
-	basis_file := strings.Replace(file, ".lmd", ".md", 1)
-	test_against_me := lmd.ReadAFile(basis_file)
+	basisFile := strings.Replace(file, ".lmd", ".md", 1)
+	testAgainstMe := lmd.ReadAFile(basisFile)
 
 	// make a temp file
-	temp_file, temp_file_err := ioutil.TempFile(os.TempDir(), "lmd-test-")
-	if temp_file_err != nil {
-		log.Fatal(temp_file_err)
+	tempFile, tempFileErr := ioutil.TempFile(os.TempDir(), "lmd-test-")
+	if tempFileErr != nil {
+		log.Fatal(tempFileErr)
 	}
-	defer os.Remove(temp_file.Name())
+	defer os.Remove(tempFile.Name())
 
 	// run LegalToMarkdown on the fixture
-	lmd.LegalToMarkdown(file, "", temp_file.Name())
+	lmd.LegalToMarkdown(file, "", tempFile.Name())
 
 	// read the tempfile
-	i_made_this_file := lmd.ReadAFile(temp_file.Name())
+	iMadeThisFile := lmd.ReadAFile(tempFile.Name())
 
 	// announce
-	if test_against_me == i_made_this_file {
+	if testAgainstMe == iMadeThisFile {
 		fmt.Println(CLR_G, "YES!\n", CLR_N)
 		return true
 	} else {
 		fmt.Println(CLR_R, "NOOOOOOOOOOOOOOOOO.\n", CLR_N)
 		fmt.Println(CLR_G, "Expected =>", CLR_N)
-		fmt.Println(test_against_me)
+		fmt.Println(testAgainstMe)
 		fmt.Println(CLR_R, "Result =>", CLR_N)
-		fmt.Println(i_made_this_file)
+		fmt.Println(iMadeThisFile)
 		return false
 	}
 
 }
 
 func TestLegalToMarkdownWithJSON(t *testing.T) {
+	fmt.Println(CLR_B, "\n\tTesting JSON Based Parsing\n", CLR_N)
+
 	// create the path properly to the glob command
-	test_files_path := filepath.Join(".", "spec", "json", "*.lmd")
+	testFilesPath := filepath.Join(".", "spec", "json", "*.lmd")
 
 	// glob the files
-	testfiles, read_error := filepath.Glob(test_files_path)
-	if read_error != nil {
-		log.Fatal(read_error)
+	testfiles, readError := filepath.Glob(testFilesPath)
+	if readError != nil {
+		log.Fatal(readError)
 	}
 
 	// set up passed and failed slices
@@ -99,8 +103,8 @@ func TestLegalToMarkdownWithJSON(t *testing.T) {
 
 	// run the unit tests
 	for _, file := range testfiles {
-		success_or_fail := testIndividualFileJSON(file)
-		if success_or_fail {
+		successOrFail := testIndividualFileJSON(file)
+		if successOrFail {
 			passed = append(passed, file)
 		} else {
 			failed = append(failed, file)
@@ -118,33 +122,101 @@ func testIndividualFileJSON(file string) bool {
 	fmt.Println(CLR_0, "Testing file: ", file, CLR_N)
 
 	// set the basis and read it into memory
-	basis_file := strings.Replace(file, ".lmd", ".md", 1)
-	params_file := strings.Replace(file, ".lmd", ".json", 1)
-	test_against_me := lmd.ReadAFile(basis_file)
+	basisFile := strings.Replace(file, ".lmd", ".md", 1)
+	paramsFile := strings.Replace(file, ".lmd", ".json", 1)
+	testAgainstMe := lmd.ReadAFile(basisFile)
 
 	// make a temp file
-	temp_file, temp_file_err := ioutil.TempFile(os.TempDir(), "lmd-test-")
-	if temp_file_err != nil {
-		log.Fatal(temp_file_err)
+	tempFile, tempFileErr := ioutil.TempFile(os.TempDir(), "lmd-test-")
+	if tempFileErr != nil {
+		log.Fatal(tempFileErr)
 	}
-	defer os.Remove(temp_file.Name())
+	defer os.Remove(tempFile.Name())
 
 	// run LegalToMarkdown on the fixture
-	lmd.LegalToMarkdown(file, params_file, temp_file.Name())
+	lmd.LegalToMarkdown(file, paramsFile, tempFile.Name())
 
 	// read the tempfile
-	i_made_this_file := lmd.ReadAFile(temp_file.Name())
+	iMadeThisFile := lmd.ReadAFile(tempFile.Name())
 
 	// announce
-	if test_against_me == i_made_this_file {
+	if testAgainstMe == iMadeThisFile {
 		fmt.Println(CLR_G, "YES!\n", CLR_N)
 		return true
 	} else {
 		fmt.Println(CLR_R, "NOOOOOOOOOOOOOOOOO.\n", CLR_N)
 		fmt.Println(CLR_G, "Expected =>", CLR_N)
-		fmt.Println(test_against_me)
+		fmt.Println(testAgainstMe)
 		fmt.Println(CLR_R, "Result =>", CLR_N)
-		fmt.Println(i_made_this_file)
+		fmt.Println(iMadeThisFile)
+		return false
+	}
+
+}
+
+func TestLegalToMarkdownHeaders(t *testing.T) {
+	// create the path properly to the glob command
+	testFilesPath := filepath.Join(".", "spec", "*.lmd")
+
+	// glob the files
+	testfiles, readError := filepath.Glob(testFilesPath)
+	if readError != nil {
+		log.Fatal(readError)
+	}
+
+	// set up passed and failed slices
+	passed := []string{}
+	failed := []string{}
+
+	// run the unit tests
+	for _, file := range testfiles {
+		successOrFail := testIndividualFileHeaders(file)
+		if successOrFail {
+			passed = append(passed, file)
+		} else {
+			failed = append(failed, file)
+			reportResults(passed, failed)
+			log.Fatal("Fast fail.")
+		}
+	}
+
+	reportResults(passed, failed)
+
+}
+
+func testIndividualFileHeaders(file string) bool {
+	fmt.Println(CLR_B, "\n\tTesting Make YAML Front Matter\n", CLR_N)
+
+	// announce thyself
+	fmt.Println(CLR_0, "Testing file: ", file, CLR_N)
+
+	// set the basis and read it into memory
+	basisFile := strings.Replace(file, ".lmd", ".headers", 1)
+	testAgainstMe := lmd.ReadAFile(basisFile)
+
+	// make a temp file
+	tempFile, tempFileErr := ioutil.TempFile(os.TempDir(), "lmd-test-")
+	if tempFileErr != nil {
+		log.Fatal(tempFileErr)
+	}
+	defer os.Remove(tempFile.Name())
+
+	// run LegalToMarkdown on the fixture
+	lmd.MakeYAMLFrontMatter(file, "", tempFile.Name())
+
+	// read the tempfile
+	iMadeThisFile := lmd.ReadAFile(tempFile.Name())
+
+	// announce
+	if testAgainstMe == iMadeThisFile {
+		fmt.Println(CLR_G, "YES!\n", CLR_N)
+		return true
+	} else {
+		fmt.Println(CLR_R, "NOOOOOOOOOOOOOOOOO.\n", CLR_N)
+		fmt.Println(CLR_G, "Expected =>", CLR_N)
+		fmt.Println(testAgainstMe)
+		fmt.Println(CLR_R, "Result =>", CLR_N)
+		fmt.Println(iMadeThisFile)
 		return false
 	}
 
