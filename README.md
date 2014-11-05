@@ -1,7 +1,7 @@
 # Legal Markdown - GoLang
 
 [![Stories in Ready](https://badge.waffle.io/eris-ltd/legalmarkdown.png?label=ready&title=Ready)](https://waffle.io/eris-ltd/legalmarkdown)
-[![Build Status](https://travis-ci.org/eris-ltd/legalmarkdown.svg?branch=master)](https://travis-ci.org/eris-ltd/legalmarkdown)
+[![Build Status](https://travis-ci.org/eris-ltd/legalmarkdown.svg?branch=master)](https://travis-ci.org/eris-ltd/legalmarkdown)[![GoDoc](https://godoc.org/github.com/eris-ltd/legalmarkdown?status.png)](https://godoc.org/github.com/eris-ltd/legalmarkdown)
 
 ## Introduction
 
