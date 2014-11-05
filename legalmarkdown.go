@@ -19,7 +19,7 @@ func main() {
 
 	legalmd.Name = "legalmarkdown"
 	legalmd.Usage = "Automate your contracting."
-	legalmd.Version = "0.6.0"
+	legalmd.Version = "0.9.0"
 	legalmd.Author = "Eris Industries, Ltd."
 	legalmd.Email = "contact@erisindustries.com"
 

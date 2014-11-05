@@ -8,12 +8,25 @@ import (
 	"strconv"
 )
 
-// HandleParameterAssembly ...
+// HandleParameterAssembly is the primary parsing function which is used by the cli
+// assemble method and any libraries seek to build YAML front matter for a template
+// file.
+//
+// The function accepts a string of content and a map of parameters.
+//
+// First the function will establish four maps, one each for the mixins, the optional
+// clauses, the headers, and they style parameters. Then the function will run through
+// searching functions to handle the assembly of each of these four major elements.
+//
+// If any parameters have been sent to the function via the paramaters map, the values
+// in each of the parameters field will be maintained. If the keys in the parameters
+// map do not exist, but the appropriate mixin, optional clause, or header exists in the
+// text of the template, then the appropriate key will be added to the appropriate map.
+//
+// Lastly the function will call a function that will reassemble the file by running
+// through each of the maps and building the front matter. The reassembled contents
+// are returned to the calling function.
 func HandleParameterAssembly(contents string, parameters map[string]string) string {
-
-	if len(parameters) == 0 {
-		return contents
-	}
 
 	mixins := make(map[string]string)
 	optClauses := make(map[string]string)
@@ -23,13 +36,22 @@ func HandleParameterAssembly(contents string, parameters map[string]string) stri
 	contents, mixins = findTheMixins(contents, parameters)
 	contents, optClauses = findTheOptClauses(contents, parameters)
 	contents, headers, styles = findTheLeaders(contents, parameters)
+
 	contents = reAssembleTheFile(contents, mixins, optClauses, headers, styles)
 
 	return contents
 
 }
 
-// HandleParameterAssemblyJSON ...
+// HandleParameterAssemblyJSON performs roughly the same parsing function as the
+// HandleParamaterAssembly function.
+//
+// The major difference is that once the four maps are established by the search functions
+// then each of the keys and values in these maps are copied back into the parameters
+// map.
+//
+// Finally the reassembled parameters map is marshaled into a JSON string that is
+// returned to the calling function.
 func AssembleParametersIntoJSON(contents string, parameters map[string]string) string {
 
 	mixins := make(map[string]string)
@@ -64,7 +86,10 @@ func AssembleParametersIntoJSON(contents string, parameters map[string]string) s
 
 }
 
-// findTheMixins ...
+// findTheMixins runs through the text of the content to find mixin patterns.
+// These are then placed into the mixins map, which is rationalized against the
+// parameters map so that the values which are passed from the parameters map
+// when the contents are originally read into memory are not overwritten.
 func findTheMixins(contents string, parameters map[string]string) (string, map[string]string) {
 
 	mixins := make(map[string]string)
@@ -83,7 +108,9 @@ func findTheMixins(contents string, parameters map[string]string) (string, map[s
 	return contents, mixins
 }
 
-// findTheOptClauses ...
+// findTheOptClauses performs exactly the same function as the findTheMixins function
+// except it is parsing the text for the optional clauses pattern instead of the mixins
+// pattern.
 func findTheOptClauses(contents string, parameters map[string]string) (string, map[string]string) {
 
 	optClauses := make(map[string]string)
@@ -102,7 +129,16 @@ func findTheOptClauses(contents string, parameters map[string]string) (string, m
 	return contents, optClauses
 }
 
-// findTheLeaders ...
+// findTheLeaders runs through the text first to determine if there is a block. If there is no
+// block then it returns the contents and empty maps to the calling function. If there is a block
+// then the function uses the splitTheBlock function to gain a string of all of the headers.
+//
+// After checking whether the header style is oldStyle ("llll.") or newStyle ("l4.") then the
+// function loops through the slice and for each of the leaders it sinks these into the headers
+// map which also checking if the value from the parameters map is kept.
+//
+// Finally the function assembles a three length map for the styles by performing roughly the
+// same algorithm as the rest of this file to ensure that the values of the parameters map are maintained.
 func findTheLeaders(contents string, parameters map[string]string) (string, map[string]string, map[string]string) {
 
 	headers := make(map[string]string)
@@ -145,7 +181,9 @@ func findTheLeaders(contents string, parameters map[string]string) (string, map[
 	return contents, headers, styles
 }
 
-// assembleStyle ...
+// assembleStyle is a convenience function which simply checks if the passed style
+// parameter is already in the parameters map and if so, it sinks that value into the
+// style map and returns the map.
 func assembleStyle(style string, parameters map[string]string, styles map[string]string) map[string]string {
 	if _, exists := parameters[style]; !exists {
 		styles[style] = ""
@@ -155,7 +193,15 @@ func assembleStyle(style string, parameters map[string]string, styles map[string
 	return styles
 }
 
-// reAssembleTheFile ...
+// reAssembleTheFile is a convenience function which builds the front matter in a particular way
+// which will make it easy for users of the legalmarkdown system to understand how to use the system.
+//
+// It first will build the mixins, then the Optional Clauses, then the headers, and finally the styles
+// along the way if any of these blocks does not exist then the appropriate section will not be built.
+//
+// Before any of that building, the function will check to make sure whether all of the main maps are
+// empty (in which case there is no front matter to build and the content without front matter is
+// returned to the calling function).
 func reAssembleTheFile(contents string, mixins map[string]string, optClauses map[string]string, headers map[string]string, styles map[string]string) string {
 
 	if !(len(mixins) == 0) || !(len(optClauses) == 0) || !(len(headers) == 0) {

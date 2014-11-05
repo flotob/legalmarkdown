@@ -104,7 +104,8 @@ func mergeParameters(superior_map map[string]string, sublimated_map map[string]s
 	return sublimated_map
 }
 
-// jsonizeParameters ...
+// jsonizeParameters is a convenience function which will simply marshal the parameters map and return
+// that marshaled json as a string to the calling function.
 func jsonizeParameters(parameters map[string]string) string {
 
 	paramsAsJsonByteArray, err := json.Marshal(parameters)

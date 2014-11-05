@@ -48,7 +48,13 @@ func MakeYAMLFrontMatter(contentsFile string, parametersFile string, outputFile 
 
 }
 
-// MarkdownToPDF ...
+// MarkdownToPDF renders an input template file to pdf using a webservice hosted on
+// https://lmdpdfgen.herokuapp.com/
+//
+// It runs through the normal parsing system but instead of sending to the standard
+// writer it sends the result of the parsing job to the WriteToPdf function which will
+// send the result of the parse job to the web service and write the result to the
+// output file location.
 func MarkdownToPDF(contentsFile string, parametersFile string, outputFile string) {
 
 	contents, parameters := setUp(contentsFile, parametersFile)
@@ -57,11 +63,21 @@ func MarkdownToPDF(contentsFile string, parametersFile string, outputFile string
 	headers := SetTheHeaders(contents, parameters)
 	contents = HandleTheHeaders(contents, headers)
 
-	writeToPdf(contents, outputFile)
+	WriteToPdf(contents, outputFile)
 
 }
 
-// GetTheParameters ...
+// GetTheParameters is a wrapper function which enables a system to determine what
+// the parameters of a given template file are. It will first look at the file to determine
+// if there is front matter which can be parsed. If there is front matter that will
+// be sent to a function which essentially just marshals the json into a string
+// that is returned to any calling function.
+//
+// If there is no front matter within the template function, the AssembleParametersIntoJSON
+// function will be called. This function is analogous to the HandleParameterAssembly function
+// which will write to YAML front matter, except that the AseembleParametersIntoJSON function
+// will marshall the parameters into a JSON string that will be returned to the calling
+// function.
 func GetTheParameters(contentsFile string) string {
 
 	_, parameters := setUp(contentsFile, "")
@@ -74,7 +90,14 @@ func GetTheParameters(contentsFile string) string {
 	}
 }
 
-// setUp ...
+// setUp is a simple convenience function which assists all of the major parsing functions
+// in this file. First it will read the contentsFile into memory, along with the included
+// partials. Then it will first parse the contentsFile to see if it has front matter. If
+// there is front matter these will be unmarshalled into the parameters map.
+//
+// If a paramaters file is sent to the function, then that file will also be unmarshalled
+// and any paramaters which are contained in both the template file and the parameters file
+// will be overwritten in favor of the values included in the parameters file.
 func setUp(contentsFile string, parametersFile string) (string, map[string]string) {
 
 	// read the template file and integrate any included partials (`@include PARTIAL` within the text)
