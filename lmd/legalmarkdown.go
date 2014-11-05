@@ -16,53 +16,7 @@ package lmd
 // Finally once the function has prepared the `contents` and `parameters` from the various passed files
 // and built a cohesive set of `contents` and `parameters`.
 //
-// These are passed to the primary entrance function to the parsing process.
-func LegalToMarkdown(contents string, parameters_file string, output string) {
-
-	// read the template file and integrate any included partials (`@include PARTIAL` within the text)
-	contents = ReadAFile(contents)
-	contents = ImportIncludedFiles(contents)
-
-	// once the content files have been read, then move along to parsing the parameters.
-	var parameters string
-	var amended_parameters map[string]string
-	if parameters_file != "" {
-
-		// first pull out of the file, just as we do if there is no specific params file
-		var merged_parameters map[string]string
-		parameters, contents = ParseTemplateToFindParameters(contents)
-		merged_parameters = UnmarshallParameters(parameters)
-
-		// second read and unmarshall the parameters from the parameters file
-		parameters = ReadAFile(parameters_file)
-		amended_parameters = UnmarshallParameters(parameters)
-
-		// finally, merge the amended_parameters (from the parameters file) into the
-		//   merged_parameters (from the content file) such that the amended_parameters
-		//   overwritethe merged_parameters.
-		amended_parameters = MergeParameters(amended_parameters, merged_parameters)
-
-	} else {
-
-		// if there is no parameters file passed, simply pull the params out of the content file.
-		parameters, contents = ParseTemplateToFindParameters(contents)
-		amended_parameters = UnmarshallParameters(parameters)
-
-	}
-
-	contents = legalToMarkdownParser(contents, amended_parameters)
-
-	WriteAFile(output, contents)
-}
-
-// MakeYAMLFrontMatter is a convenience function which will parse the contents of a template
-// to formulate the YAML Front Matter.
-func MakeYAMLFrontMatter(contents string) string {
-	// TODO: it all.
-	return contents
-}
-
-// legalToMarkdownParser is the overseer of the parsing functionality. The contents of the file
+// These are passed to the primary entrance function to the parsing process. The contents of the file
 // which needs to be parsed, and the parameters which should control the parsing and transformation
 // of the lmd file to a rendered document are lexed and ready for the parser to run through
 // the sequence of mixins, optional clauses, and structured headers.
@@ -73,9 +27,71 @@ func MakeYAMLFrontMatter(contents string) string {
 // Once the parser has completed its work, it will return to the LegalToMarkdown function the final
 // contents so that that function may call the appropriate writer for outputting the parsed document
 // back to the user.
-func legalToMarkdownParser(contents string, parameters map[string]string) string {
+func LegalToMarkdown(contentsFile string, parametersFile string, outputFile string) {
+
+	contents, parameters := setUp(contentsFile, parametersFile)
 	contents, parameters = HandleMixins(contents, parameters)
+
 	headers := SetTheHeaders(contents, parameters)
 	contents = HandleTheHeaders(contents, headers)
-	return contents
+
+	writeAFile(outputFile, contents)
+}
+
+// MakeYAMLFrontMatter is a convenience function which will parse the contents of a template
+// to formulate the YAML Front Matter.
+func MakeYAMLFrontMatter(contentsFile string, parametersFile string, outputFile string) {
+
+	contents, parameters := setUp(contentsFile, parametersFile)
+	contents = HandleParameterAssembly(contents, parameters)
+	writeAFile(outputFile, contents)
+
+}
+
+
+// MarkdownToPDF
+func MarkdownToPDF(contentsFile string, parametersFile string, outputFile string) {
+
+	contents, parameters := setUp(contentsFile, parametersFile)
+	contents, parameters = HandleMixins(contents, parameters)
+
+	headers := SetTheHeaders(contents, parameters)
+	contents = HandleTheHeaders(contents, headers)
+
+
+}
+
+func setUp(contentsFile string, parametersFile string) (string, map[string]string) {
+
+	// read the template file and integrate any included partials (`@include PARTIAL` within the text)
+	contents := ReadAFile(contentsFile)
+	contents = importIncludedFiles(contents)
+
+	// once the content files have been read, then move along to parsing the parameters.
+	var parameters string
+	var amendedParameters map[string]string
+	if parametersFile != "" {
+
+		// first pull out of the file, just as we do if there is no specific params file
+		var mergedParameters map[string]string
+		parameters, contents = parseTemplateToFindParameters(contents)
+		mergedParameters = unmarshallParameters(parameters)
+
+		// second read and unmarshall the parameters from the parameters file
+		parameters = ReadAFile(parametersFile)
+		amendedParameters = unmarshallParameters(parameters)
+
+		// finally, merge the amendedParameters (from the parameters file) into the
+		//   mergedParameters (from the content file) such that the amendedParameters
+		//   overwritethe mergedParameters.
+		amendedParameters = mergeParameters(amendedParameters, mergedParameters)
+
+	} else {
+
+		// if there is no parameters file passed, simply pull the params out of the content file.
+		parameters, contents = parseTemplateToFindParameters(contents)
+		amendedParameters = unmarshallParameters(parameters)
+
+	}
+	return contents, amendedParameters
 }
