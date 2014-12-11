@@ -90,6 +90,21 @@ func GetTheParameters(contentsFile string) string {
 	}
 }
 
+// RawMarkdownToPDF is a function which does not work with written or written_to files
+// instead of dealing with files to be read, the function simply parses strings which are
+// passed to it programmatically. Otherwise the function logic mirrors MarkdownToPDF.
+func RawMarkdownToPDF(rawContents string, rawParameters string) string {
+
+	contents, parameters := setUpRaw(rawContents, rawParameters)
+	contents, parameters = HandleMixins(contents, parameters)
+
+	headers := SetTheHeaders(contents, parameters)
+	contents = HandleTheHeaders(contents, headers)
+
+	return WriteToPdfRaw(contents)
+
+}
+
 // setUp is a simple convenience function which assists all of the major parsing functions
 // in this file. First it will read the contentsFile into memory, along with the included
 // partials. Then it will first parse the contentsFile to see if it has front matter. If
@@ -117,6 +132,36 @@ func setUp(contentsFile string, parametersFile string) (string, map[string]strin
 		// second read and unmarshall the parameters from the parameters file
 		parameters = ReadAFile(parametersFile)
 		amendedParameters = unmarshallParameters(parameters)
+
+		// finally, merge the amendedParameters (from the parameters file) into the
+		//   mergedParameters (from the content file) such that the amendedParameters
+		//   overwritethe mergedParameters.
+		amendedParameters = mergeParameters(amendedParameters, mergedParameters)
+
+	} else {
+
+		// if there is no parameters file passed, simply pull the params out of the content file.
+		parameters, contents = parseTemplateToFindParameters(contents)
+		amendedParameters = unmarshallParameters(parameters)
+
+	}
+	return contents, amendedParameters
+}
+
+func setUpRaw(contents string, rawParameters string) (string, map[string]string) {
+
+	// once the content files have been read, then move along to parsing the parameters.
+	var parameters string
+	var amendedParameters map[string]string
+	if rawParameters != "" {
+
+		// first pull out of the file, just as we do if there is no specific params file
+		var mergedParameters map[string]string
+		parameters, contents = parseTemplateToFindParameters(contents)
+		mergedParameters = unmarshallParameters(parameters)
+
+		// second read and unmarshall the parameters from the parameters file
+		amendedParameters = unmarshallParameters(rawParameters)
 
 		// finally, merge the amendedParameters (from the parameters file) into the
 		//   mergedParameters (from the content file) such that the amendedParameters

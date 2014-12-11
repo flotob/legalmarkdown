@@ -76,3 +76,61 @@ func WriteToPdf(contents string, outputFile string) {
 	defer out.Close()
 	io.Copy(out, res.Body)
 }
+
+func WriteToPdfRaw(contents string) string {
+
+	// run the normal parse and write to a tempfile
+	tempFile, err := ioutil.TempFile(os.TempDir(), "lmd-test-")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer os.Remove(tempFile.Name())
+	writeAFile(tempFile.Name(), contents)
+
+	// initialize
+	var b bytes.Buffer
+	w := multipart.NewWriter(&b)
+	f, err := os.Open(tempFile.Name())
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// create the form
+	fw, err := w.CreateFormFile("data", tempFile.Name())
+	if err != nil {
+		log.Fatal(err)
+	}
+	if _, err = io.Copy(fw, f); err != nil {
+		log.Fatal(err)
+	}
+	w.Close()
+
+	// Now that you have a form, you can submit it to your handler.
+	req, err := http.NewRequest("POST", "https://lmdpdfgen.herokuapp.com/", &b)
+	if err != nil {
+		log.Fatal(err)
+	}
+	// Don't forget to set the content type, this will contain the boundary.
+	req.Header.Set("Content-Type", w.FormDataContentType())
+
+	// Submit the request
+	client := &http.Client{}
+	res, err := client.Do(req)
+
+	// Check the response
+	if res.StatusCode != http.StatusOK {
+		err = fmt.Errorf("bad status: %s", res.Status)
+	}
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer res.Body.Close()
+
+	var buf []byte
+	buf, err = ioutil.ReadAll(res.Body)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return string(buf)
+}
