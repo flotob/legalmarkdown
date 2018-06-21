@@ -35,7 +35,7 @@ After the library has finished its installation on your system then you can go t
 legalmarkdown parse --template [template_filename] --output [output_filename]
 ```
 
-Legal Markdown will parse the file and write to the stated output. If you need to pipe from another command or into another command both of the `--template` (or `-t`) and `--output` (or `-o`) flags can be set to `-` which will read from stdin and write to stdout respectively. This is the command you will use if you want to output any text based document rather than a structured document. Again, even though it says markdown it should work for most text based systems.
+<b>Legal Markdown</b> will parse the file and write to the stated output. If you need to pipe from another command or into another command both of the `--template` (or `-t`) and `--output` (or `-o`) flags can be set to `-` which will read from stdin and write to stdout respectively. This is the command you will use if you want to output any text based document rather than a structured document. Again, even though it says markdown it should work for most text based systems.
 
 If you have been working on a template or document and would like the library to build the YAML Front-Matter (see below) automatically for you, then simply type
 
